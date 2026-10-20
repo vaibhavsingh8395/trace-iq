@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Trace-IQ | Autonomous Requirements Traceability & Impact Analyzer</title>
+  
+  <style>
+    :root {
+      --bg-deep: #090d16;
+      --bg-surface: #111827;
+      --bg-card: #1f293d;
+      --border-color: #374151;
+      --text-main: #f3f4f6;
+      --text-muted: #9ca3af;
+      --accent-primary: #06b6d4;
+      --accent-glow: rgba(6, 182, 212, 0.15);
+      --accent-purple: #8b5cf6;
+      --success: #10b981;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+      --radius: 12px;
+    }
+
+    * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    body { background-color: var(--bg-deep); margin: 0; padding: 0; color: var(--text-main); min-height: 100vh; }
+
+    .app-container { max-width: 1500px; margin: 0 auto; padding: 24px; }
+    header { background: var(--bg-surface); border: 1px solid var(--border-color); border-radius: var(--radius); padding: 20px 28px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; box-shadow: 0 4px 20px rgba(0,0,0,0.3); flex-wrap: wrap; gap: 15px; }
+    .brand-area { display: flex; align-items: center; gap: 16px; }
+    .logo-badge { background: linear-gradient(135deg, var(--accent-primary), var(--accent-purple)); width: 44px; height: 44px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 22px; color: #fff; font-weight: bold; box-shadow: 0 0 15px var(--accent-glow); }
+    
+    /* HORIZONTAL NAVIGATION TABS */
+    .nav-tabs { 
+      display: flex; 
+      flex-direction: row; 
+      gap: 10px; 
+      margin-bottom: 24px; 
+      border-bottom: 1px solid var(--border-color); 
+      padding-bottom: 14px; 
+      flex-wrap: wrap; 
+      align-items: center;
+    }
+    .tab-btn { 
+      background: var(--bg-surface); 
+      color: var(--text-muted); 
+      border: 1px solid var(--border-color); 
+      padding: 10px 20px; 
+      border-radius: 8px; 
+      font-weight: 600; 
+      cursor: pointer; 
+      font-size: 14px; 
+      width: auto !important; 
+      display: inline-block !important;
+      transition: all 0.2s; 
+    }
+    .tab-btn:hover { color: var(--text-main); border-color: var(--accent-primary); background: var(--bg-card); }
+    .tab-btn.active { background: var(--accent-glow); color: var(--accent-primary); border-color: var(--accent-primary); }
+
+    .card { background: var(--bg-surface); border: 1px solid var(--border-color); border-radius: var(--radius); padding: 28px; margin-bottom: 24px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
+    
+    h2, h3 { color: var(--text-main); margin-top: 0; font-weight: 700; }
+    .form-group { margin-bottom: 18px; }
+    label { display: block; margin-bottom: 6px; font-weight: 500; color: var(--text-muted); font-size: 0.85rem; }
+    input, select, textarea { width: 100%; padding: 12px 16px; border: 1px solid var(--border-color); border-radius: 8px; font-size: 14px; background: var(--bg-deep); color: var(--text-main); }
+    input:focus, select:focus, textarea:focus { outline: none; border-color: var(--accent-primary); box-shadow: 0 0 0 3px var(--accent-glow); }
+
+    button { background: linear-gradient(135deg, var(--accent-primary), #0891b2); color: white; border: none; padding: 12px 20px; font-size: 14px; font-weight: 600; border-radius: 8px; cursor: pointer; width: 100%; transition: opacity 0.2s; box-shadow: 0 0 15px var(--accent-glow); }
+    button:hover { opacity: 0.9; }
+    .btn-secondary { background: var(--bg-card); color: var(--text-main); border: 1px solid var(--border-color); box-shadow: none; }
+    .btn-small { padding: 6px 14px; font-size: 12px; width: auto !important; display: inline-block !important; }
+
+    /* MODAL OVERLAY */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.7);
+      z-index: 9999;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    /* METRICS & DASHBOARD */
+    .metrics-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin-bottom: 24px; }
+    .metric-card { background: var(--bg-card); border: 1px solid var(--border-color); padding: 20px; border-radius: 10px; }
+    .metric-card h4 { margin: 0 0 6px 0; color: var(--text-muted); font-size: 0.75rem; text-transform: uppercase; }
+    .metric-card span { font-size: 1.8rem; font-weight: 800; color: var(--accent-primary); }
+
+    table { width: 100%; border-collapse: collapse; margin-top: 12px; }
+    th, td { padding: 14px 16px; text-align: left; border-bottom: 1px solid var(--border-color); font-size: 14px; }
+    th { background-color: var(--bg-card); color: var(--text-muted); font-weight: 600; font-size: 0.75rem; text-transform: uppercase; }
+    
+    .badge { padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; display: inline-block; }
+    .badge-high { background: rgba(239, 68, 68, 0.2); color: var(--danger); }
+    .badge-med { background: rgba(245, 158, 11, 0.2); color: var(--warning); }
+    .badge-low { background: rgba(6, 182, 212, 0.2); color: var(--accent-primary); }
+    .badge-verified { background: rgba(16, 185, 129, 0.2); color: var(--success); }
+
+    .search-filter-bar { display: flex; gap: 12px; margin-bottom: 20px; flex-wrap: wrap; }
+    .search-filter-bar input { flex: 1; min-width: 240px; }
+  </style>
+</head>
+<body>
+
+<div class="app-container" id="appContainer">
+  
+  <header>
+    <div class="brand-area">
+      <div class="logo-badge">🎯</div>
+      <div>
+        <h1 style="font-size: 1.25rem; margin: 0; font-weight: 800;">Trace-IQ Enterprise Platform</h1>
+        <p style="font-size: 0.8rem; margin: 2px 0 0 0; color: var(--text-muted);">Requirements Traceability Matrix & Change Impact Analyzer</p>
+      </div>
+    </div>
+    <div style="display: flex; gap: 12px; align-items: center;">
+      <span style="font-size: 12px; color: var(--success); font-weight: 600;">● AI Trace Engine Active</span>
+    </div>
+  </header>
+
+  <!-- HORIZONTAL NAVIGATION TABS -->
+  <div class="nav-tabs">
+    <button class="tab-btn active" id="btn-matrix" onclick="switchTab('matrix')">📋 Traceability Matrix (RTM)</button>
+    <button class="tab-btn" id="btn-impact" onclick="switchTab('impact')">⚡ Change Impact Simulator</button>
+    <button class="tab-btn" id="btn-analytics" onclick="switchTab('analytics')">📊 BA Metrics & Reports</button>
+    <button class="tab-btn" id="btn-audit" onclick="switchTab('audit')">🔍 Requirements Audit Log</button>
+  </div>
+
+  <!-- TAB 1: TRACEABILITY MATRIX (RTM) -->
+  <div id="view-matrix" class="card">
+    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px;">
+      <div>
+        <h2>Requirements Traceability Matrix</h2>
+        <p style="color: var(--text-muted); font-size: 13px; margin: 2px 0 0 0;">Link Business Goals down to User Stories, API Endpoints, and Database Schemas.</p>
+      </div>
+      <button class="btn-small" onclick="openNewReqModal()">+ Ingest New Requirement</button>
+    </div>
+
+    <div class="search-filter-bar" style="margin-top: 20px;">
+      <input type="text" id="reqSearchInput" placeholder="🔍 Search requirements by ID, title, or stakeholder..." oninput="renderRTMTable()">
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Req ID</th>
+          <th>Business Goal / Feature</th>
+          <th>User Story</th>
+          <th>Mapped API / Component</th>
+          <th>Risk Level</th>
+          <th>Status</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody id="rtmTableBody"></tbody>
+    </table>
+  </div>
+
+  <!-- TAB 2: CHANGE IMPACT SIMULATOR -->
+  <div id="view-impact" class="card" style="display: none;">
+    <h2>Change Impact Analyzer</h2>
+    <p style="color: var(--text-muted); font-size: 13px; margin-bottom: 24px;">Simulate requirement modifications to instantly audit downstream engineering dependencies.</p>
+
+    <div class="form-group" style="max-width: 600px;">
+      <label>Select Requirement to Modify</label>
+      <select id="impactSelectReq" onchange="runImpactSimulation()">
+        <option value="REQ-001">REQ-001: Automated Customs Ingestion API</option>
+        <option value="REQ-002">REQ-002: Multi-tenant Workspace Isolation</option>
+        <option value="REQ-003">REQ-003: Real-time Telemetry WebSocket Sync</option>
+      </select>
+    </div>
+
+    <div id="impactResultContainer" style="margin-top: 24px;"></div>
+  </div>
+
+  <!-- TAB 3: ANALYTICS & REPORTING -->
+  <div id="view-analytics" class="card" style="display: none;">
+    <h2>BA Metrics & Export Suite</h2>
+    <p style="color: var(--text-muted); font-size: 13px; margin-bottom: 24px;">Export verified Requirements Specification packages and RTM matrices instantly.</p>
+
+    <div class="metrics-grid">
+      <div class="metric-card">
+        <h4>Total Requirements Tracked</h4>
+        <span id="statTotalReqs">0</span>
+      </div>
+      <div class="metric-card">
+        <h4>Traceability Coverage</h4>
+        <span id="statCoverage">100%</span>
+      </div>
+      <div class="metric-card">
+        <h4>High Risk Dependencies</h4>
+        <span id="statHighRisk">0</span>
+      </div>
+    </div>
+
+    <div style="display: flex; gap: 16px; margin-top: 30px; flex-wrap: wrap;">
+      <button onclick="exportData('csv')" style="max-width: 260px;">📥 Export RTM Report (CSV)</button>
+      <button onclick="exportData('json')" class="btn-secondary" style="max-width: 260px;">📥 Export Spec Package (JSON)</button>
+    </div>
+  </div>
+
+  <!-- TAB 4: AUDIT LOG -->
+  <div id="view-audit" class="card" style="display: none;">
+    <h2>Requirement Lifecycle Audit Trail</h2>
+    <p style="color: var(--text-muted); font-size: 13px; margin-bottom: 20px;">Immutable history of stakeholder edits and scope modifications.</p>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Timestamp</th>
+          <th>Analyst</th>
+          <th>Action</th>
+          <th>Detail Summary</th>
+        </tr>
+      </thead>
+      <tbody id="auditTableBody"></tbody>
+    </table>
+  </div>
+
+</div>
+
+<!-- INGEST REQUIREMENT MODAL -->
+<div id="reqModal" class="modal-overlay">
+  <div class="card" style="width: 100%; max-width: 500px; margin: 0; background: var(--bg-surface);">
+    <h3>Ingest New Business Requirement</h3>
+    <form onsubmit="handleCreateReq(event)">
+      <div class="form-group">
+        <label>Requirement Title & Goal</label>
+        <input type="text" id="reqTitleInput" placeholder="Stripe Payment Gateway Integration" required>
+      </div>
+      <div class="form-group">
+        <label>User Story Mapping</label>
+        <input type="text" id="reqStoryInput" placeholder="As a user, I want to pay securely..." required>
+      </div>
+      <div class="form-group">
+        <label>Mapped Technical Component</label>
+        <input type="text" id="reqComponentInput" placeholder="/api/v1/payments (Node.js)" required>
+      </div>
+      <div class="form-group">
+        <label>Risk Level</label>
+        <select id="reqRiskInput">
+          <option value="High">High Risk</option>
+          <option value="Medium" selected>Medium Risk</option>
+          <option value="Low">Low Risk</option>
+        </select>
+      </div>
+      <div style="display: flex; gap: 12px; margin-top: 24px;">
+        <button type="submit">Save Requirement</button>
+        <button type="button" class="btn-secondary" onclick="closeNewReqModal()">Cancel</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+  let currentUser = { name: 'Vaibhav Singh', role: 'Lead Business Analyst' };
+
+  function initSeedData() {
+    if (!localStorage.getItem('traceiq_reqs')) {
+      const defaultReqs = [
+        { id: 'REQ-001', title: 'Automated Customs Ingestion API', story: 'As an importer, I want automated HTS code parsing.', component: '/api/v1/customs/ingest', risk: 'High', status: 'Verified' },
+        { id: 'REQ-002', title: 'Multi-tenant Workspace Isolation', story: 'As an admin, I want secure data partitioning.', component: 'PostgreSQL Row-Level Security', risk: 'High', status: 'Verified' },
+        { id: 'REQ-003', title: 'Real-time Telemetry WebSocket Sync', story: 'As an operator, I want live IoT cargo tracking.', component: 'Node.js Socket.io Gateway', risk: 'Medium', status: 'In Review' }
+      ];
+      localStorage.setItem('traceiq_reqs', JSON.stringify(defaultReqs));
+    }
+    if (!localStorage.getItem('traceiq_audit')) {
+      const defaultAudit = [
+        { time: new Date().toLocaleString(), analyst: 'System BA', action: 'INIT_RTM', summary: 'Initialized Trace-IQ requirements matrix successfully.' }
+      ];
+      localStorage.setItem('traceiq_audit', JSON.stringify(defaultAudit));
+    }
+  }
+
+  function logAudit(action, summary) {
+    const audit = JSON.parse(localStorage.getItem('traceiq_audit')) || [];
+    audit.unshift({ time: new Date().toLocaleString(), analyst: currentUser.name, action, summary });
+    localStorage.setItem('traceiq_audit', JSON.stringify(audit));
+  }
+
+  function switchTab(tabName) {
+    ['matrix', 'impact', 'analytics', 'audit'].forEach(t => {
+      const el = document.getElementById('view-' + t);
+      const btn = document.getElementById('btn-' + t);
+      if (el) el.style.display = (t === tabName) ? 'block' : 'none';
+      if (btn) btn.classList.toggle('active', t === tabName);
+    });
+
+    if (tabName === 'matrix') renderRTMTable();
+    if (tabName === 'impact') runImpactSimulation();
+    if (tabName === 'analytics') updateAnalytics();
+    if (tabName === 'audit') renderAuditTable();
+  }
+
+  function renderRTMTable() {
+    const reqs = JSON.parse(localStorage.getItem('traceiq_reqs')) || [];
+    const query = document.getElementById('reqSearchInput').value.toLowerCase();
+    const tbody = document.getElementById('rtmTableBody');
+    tbody.innerHTML = '';
+
+    reqs.forEach(r => {
+      if (query && !r.id.toLowerCase().includes(query) && !r.title.toLowerCase().includes(query) && !r.component.toLowerCase().includes(query)) return;
+      const badgeClass = r.risk === 'High' ? 'badge-high' : (r.risk === 'Medium' ? 'badge-med' : 'badge-low');
+      const row = document.createElement('tr');
+      row.innerHTML = `
+        <td><strong>${r.id}</strong></td>
+        <td>${r.title}</td>
+        <td style="color: var(--text-muted); font-size: 13px;">${r.story}</td>
+        <td><span class="badge badge-low" style="font-family: monospace;">${r.component}</span></td>
+        <td><span class="badge ${badgeClass}">${r.risk}</span></td>
+        <td><span class="badge badge-verified">● ${r.status}</span></td>
+        <td><button class="btn-small btn-secondary" onclick="deleteReq('${r.id}')">Remove</button></td>
+      `;
+      tbody.appendChild(row);
+    });
+  }
+
+  function openNewReqModal() { document.getElementById('reqModal').style.display = 'flex'; }
+  function closeNewReqModal() { document.getElementById('reqModal').style.display = 'none'; }
+
+  function handleCreateReq(e) {
+    e.preventDefault();
+    const title = document.getElementById('reqTitleInput').value.trim();
+    const story = document.getElementById('reqStoryInput').value.trim();
+    const component = document.getElementById('reqComponentInput').value.trim();
+    const risk = document.getElementById('reqRiskInput').value;
+
+    const reqs = JSON.parse(localStorage.getItem('traceiq_reqs')) || [];
+    const newId = 'REQ-00' + (reqs.length + 1);
+    reqs.push({ id: newId, title, story, component, risk, status: 'Draft' });
+    localStorage.setItem('traceiq_reqs', JSON.stringify(reqs));
+
+    logAudit('INGEST_REQ', `Added new requirement [${newId}]: ${title}`);
+    closeNewReqModal();
+    renderRTMTable();
+  }
+
+  function deleteReq(id) {
+    let reqs = JSON.parse(localStorage.getItem('traceiq_reqs')) || [];
+    reqs = reqs.filter(r => r.id !== id);
+    localStorage.setItem('traceiq_reqs', JSON.stringify(reqs));
+    logAudit('DELETE_REQ', `Removed requirement ${id} from matrix.`);
+    renderRTMTable();
+  }
+
+  function runImpactSimulation() {
+    const selectedId = document.getElementById('impactSelectReq').value;
+    const reqs = JSON.parse(localStorage.getItem('traceiq_reqs')) || [];
+    const r = reqs.find(item => item.id === selectedId) || reqs[0];
+    const container = document.getElementById('impactResultContainer');
+
+    if (!r) {
+      container.innerHTML = `<p style="color: var(--text-muted);">No requirements available for simulation.</p>`;
+      return;
+    }
+
+    container.innerHTML = `
+      <div class="card" style="background: var(--bg-deep); border-color: var(--accent-primary); margin: 0;">
+        <h3 style="color: var(--accent-primary); margin-bottom: 10px;">Impact Analysis for ${r.id}</h3>
+        <p><strong>Target Component:</strong> <span style="font-family: monospace;">${r.component}</span></p>
+        <p><strong>Assessed Risk Level:</strong> <span class="badge ${r.risk === 'High' ? 'badge-high' : 'badge-med'}">${r.risk} Risk</span></p>
+        
+        <h4 style="margin-top: 20px; font-size: 0.9rem; text-transform: uppercase; color: var(--text-muted);">Downstream Engineering Dependencies Affected:</h4>
+        <ul style="color: var(--text-main); line-height: 1.6; font-size: 14px;">
+          <li>🔒 <strong>Database Schema:</strong> Foreign key references in tenants table.</li>
+          <li>🌐 <strong>API Gateway:</strong> Rate-limiting middleware and CORS route bindings.</li>
+          <li>📋 <strong>Test Suite:</strong> 14 automated integration test assertions linked to ${r.id}.</li>
+        </ul>
+        <button class="btn-small" style="margin-top: 15px;" onclick="alert('Change impact report verified and signed off.')">Sign Off on Scope Change</button>
+      </div>
+    `;
+  }
+
+  function updateAnalytics() {
+    const reqs = JSON.parse(localStorage.getItem('traceiq_reqs')) || [];
+    const highRisk = reqs.filter(r => r.risk === 'High').length;
+
+    document.getElementById('statTotalReqs').textContent = reqs.length;
+    document.getElementById('statCoverage').textContent = '100%';
+    document.getElementById('statHighRisk').textContent = highRisk;
+  }
+
+  function renderAuditTable() {
+    const audit = JSON.parse(localStorage.getItem('traceiq_audit')) || [];
+    const tbody = document.getElementById('auditTableBody');
+    tbody.innerHTML = '';
+    audit.forEach(a => {
+      const row = document.createElement('tr');
+      row.innerHTML = `
+        <td style="font-size: 12px; color: var(--text-muted);">${a.time}</td>
+        <td><strong>${a.analyst}</strong></td>
+        <td><span class="badge badge-med">${a.action}</span></td>
+        <td style="font-family: monospace; font-size: 12px;">${a.summary}</td>
+      `;
+      tbody.appendChild(row);
+    });
+  }
+
+  function exportData(format) {
+    const reqs = JSON.parse(localStorage.getItem('traceiq_reqs')) || [];
+    if (format === 'json') {
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify({ product: 'Trace-IQ', requirements: reqs }, null, 2));
+      const dlAnchor = document.createElement('a');
+      dlAnchor.setAttribute("href", dataStr);
+      dlAnchor.setAttribute("download", `trace_iq_specification_package.json`);
+      document.body.appendChild(dlAnchor);
+      dlAnchor.click();
+      dlAnchor.remove();
+    } else {
+      let csv = "ID,Title,UserStory,Component,Risk,Status\n";
+      reqs.forEach(r => { csv += `"${r.id}","${r.title}","${r.story}","${r.component}","${r.risk}","${r.status}"\n`; });
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const dlAnchor = document.createElement('a');
+      dlAnchor.setAttribute("href", url);
+      dlAnchor.setAttribute("download", `trace_iq_rtm_report.csv`);
+      document.body.appendChild(dlAnchor);
+      dlAnchor.click();
+      dlAnchor.remove();
+    }
+    logAudit('EXPORT_SUITE', `Exported requirements package in ${format.toUpperCase()} format.`);
+  }
+
+  // Initialize
+  initSeedData();
+  switchTab('matrix');
+</script>
+
+</body>
+</html>
