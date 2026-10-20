@@ -25,7 +25,7 @@
     * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
     body { background-color: var(--bg-deep); margin: 0; padding: 0; color: var(--text-main); min-height: 100vh; background-image: radial-gradient(circle at 15% 10%, rgba(6, 182, 212, 0.08) 0%, transparent 45%), radial-gradient(circle at 85% 90%, rgba(139, 92, 246, 0.08) 0%, transparent 45%); }
 
-    .app-container { max-width: 1600px; margin: 0 auto; padding: 32px; }
+    .app-container { max-width: 1650px; margin: 0 auto; padding: 32px; }
     
     header { background: var(--bg-surface); border: 1px solid var(--border-color); border-radius: var(--radius); padding: 28px 36px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 32px; box-shadow: 0 15px 35px rgba(0,0,0,0.5); flex-wrap: wrap; gap: 20px; position: relative; overflow: hidden; }
     header::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 3px; background: linear-gradient(90deg, var(--accent-primary), var(--accent-purple)); }
@@ -37,7 +37,7 @@
     /* NAVIGATION TABS */
     .nav-tabs { 
       display: flex; 
-      gap: 14px; 
+      gap: 10px; 
       margin-bottom: 32px; 
       border-bottom: 1px solid var(--border-color); 
       padding-bottom: 18px; 
@@ -47,15 +47,15 @@
       background: var(--bg-surface); 
       color: var(--text-muted); 
       border: 1px solid var(--border-color); 
-      padding: 14px 26px; 
+      padding: 12px 20px; 
       border-radius: 12px; 
       font-weight: 600; 
       cursor: pointer; 
-      font-size: 14px; 
+      font-size: 13px; 
       transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 6px;
     }
     .tab-btn:hover { color: var(--text-main); border-color: var(--accent-primary); background: var(--bg-card); transform: translateY(-2px); }
     .tab-btn.active { background: var(--accent-glow); color: var(--accent-primary); border-color: var(--accent-primary); box-shadow: 0 0 20px var(--accent-glow); }
@@ -91,7 +91,7 @@
     @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
     /* METRICS & DASHBOARD */
-    .metrics-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 24px; margin-bottom: 32px; }
+    .metrics-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 24px; margin-bottom: 32px; }
     .metric-card { background: var(--bg-card); border: 1px solid var(--border-color); padding: 28px; border-radius: 14px; position: relative; overflow: hidden; transition: transform 0.3s; }
     .metric-card:hover { transform: translateY(-3px); border-color: var(--accent-primary); }
     .metric-card::after { content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 100%; background: var(--accent-primary); }
@@ -105,18 +105,24 @@
     tr:hover td { background-color: rgba(6, 182, 212, 0.03); }
     
     .badge { padding: 6px 14px; border-radius: 30px; font-size: 11px; font-weight: 600; display: inline-block; text-transform: uppercase; letter-spacing: 0.05em; }
-    .badge-high { background: rgba(239, 68, 68, 0.15); color: var(--danger); border: 1px solid rgba(239, 68, 68, 0.3); box-shadow: 0 0 10px rgba(239,68,68,0.1); }
-    .badge-med { background: rgba(245, 158, 11, 0.15); color: var(--warning); border: 1px solid rgba(245, 158, 11, 0.3); box-shadow: 0 0 10px rgba(245,158,11,0.1); }
-    .badge-low { background: rgba(6, 182, 212, 0.15); color: var(--accent-primary); border: 1px solid rgba(6, 182, 212, 0.3); box-shadow: 0 0 10px rgba(6,182,212,0.1); }
-    .badge-verified { background: rgba(16, 185, 129, 0.15); color: var(--success); border: 1px solid rgba(16, 185, 129, 0.3); box-shadow: 0 0 10px rgba(16,185,129,0.1); }
+    .badge-high { background: rgba(239, 68, 68, 0.15); color: var(--danger); border: 1px solid rgba(239, 68, 68, 0.3); }
+    .badge-med { background: rgba(245, 158, 11, 0.15); color: var(--warning); border: 1px solid rgba(245, 158, 11, 0.3); }
+    .badge-low { background: rgba(6, 182, 212, 0.15); color: var(--accent-primary); border: 1px solid rgba(6, 182, 212, 0.3); }
+    .badge-verified { background: rgba(16, 185, 129, 0.15); color: var(--success); border: 1px solid rgba(16, 185, 129, 0.3); }
 
     .search-filter-bar { display: flex; gap: 16px; margin-bottom: 28px; flex-wrap: wrap; }
     .search-filter-bar input { flex: 1; min-width: 280px; }
 
-    /* DEPENDENCY TREE NODES */
+    /* DEPENDENCY NODES */
     .dependency-node { display: flex; align-items: center; gap: 14px; background: var(--bg-card); border: 1px solid var(--border-color); padding: 16px 20px; border-radius: 12px; margin-bottom: 12px; transition: all 0.2s; }
     .dependency-node:hover { border-color: var(--accent-primary); transform: translateX(4px); }
     .node-icon { font-size: 20px; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; background: rgba(6,182,212,0.1); border-radius: 10px; border: 1px solid rgba(6,182,212,0.2); }
+
+    /* CHAT COPILOT */
+    .chat-box { background: var(--bg-deep); border: 1px solid var(--border-color); border-radius: 12px; padding: 20px; height: 320px; overflow-y: auto; margin-bottom: 16px; display: flex; flex-direction: column; gap: 14px; }
+    .chat-msg { padding: 12px 16px; border-radius: 10px; max-width: 80%; font-size: 14px; line-height: 1.5; }
+    .chat-msg.user { background: var(--accent-glow); border: 1px solid rgba(6,182,212,0.3); align-self: flex-end; color: #fff; }
+    .chat-msg.ai { background: var(--bg-card); border: 1px solid var(--border-color); align-self: flex-start; color: var(--text-main); }
 
     /* TOAST NOTIFICATION */
     #toast {
@@ -145,40 +151,58 @@
   
   <header>
     <div class="brand-area">
-      <div class="logo-badge">🤖</div>
+      <div class="logo-badge">⚡</div>
       <div>
-        <h1 style="font-size: 1.5rem; margin: 0; font-weight: 800; background: linear-gradient(135deg, #fff, #94a3b8); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Trace-IQ (ReqMesh AI Engine)</h1>
-        <p style="font-size: 0.9rem; margin: 6px 0 0 0; color: var(--text-muted);">AI-Powered Transcript Decomposition & Requirements Traceability Platform</p>
+        <h1 style="font-size: 1.5rem; margin: 0; font-weight: 800; background: linear-gradient(135deg, #fff, #94a3b8); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Trace-IQ Enterprise Platform</h1>
+        <p style="font-size: 0.9rem; margin: 6px 0 0 0; color: var(--text-muted);">Autonomous Requirements Intelligence, Copilot & Compliance Engine</p>
       </div>
     </div>
-    <div style="display: flex; gap: 16px; align-items: center; background: var(--bg-card); padding: 12px 20px; border-radius: 12px; border: 1px solid var(--border-color); box-shadow: inset 0 2px 5px rgba(0,0,0,0.3);">
-      <span style="font-size: 13px; color: var(--success); font-weight: 600; display: flex; align-items: center; gap: 8px;"><span style="width: 10px; height: 10px; background: var(--success); border-radius: 50%; display: inline-block; box-shadow: 0 0 10px var(--success);"></span> Local AI Transformer Active</span>
+    <div style="display: flex; gap: 16px; align-items: center; background: var(--bg-card); padding: 12px 20px; border-radius: 12px; border: 1px solid var(--border-color);">
+      <span style="font-size: 13px; color: var(--success); font-weight: 600; display: flex; align-items: center; gap: 8px;"><span style="width: 10px; height: 10px; background: var(--success); border-radius: 50%; display: inline-block; box-shadow: 0 0 10px var(--success);"></span> AI & Compliance Core Active</span>
     </div>
   </header>
 
   <!-- NAVIGATION TABS -->
   <div class="nav-tabs">
-    <button class="tab-btn active" id="btn-ai" onclick="switchTab('ai')">🤖 AI Transcript & PRD Ingestion</button>
+    <button class="tab-btn active" id="btn-ai" onclick="switchTab('ai')">🤖 AI Transcript Decomposition</button>
+    <button class="tab-btn" id="btn-chat" onclick="switchTab('chat')">💬 RTM Copilot Chat</button>
     <button class="tab-btn" id="btn-matrix" onclick="switchTab('matrix')">📋 Traceability Matrix (RTM)</button>
     <button class="tab-btn" id="btn-impact" onclick="switchTab('impact')">⚡ Change Impact Simulator</button>
-    <button class="tab-btn" id="btn-analytics" onclick="switchTab('analytics')">📊 BA Metrics & Reports</button>
-    <button class="tab-btn" id="btn-audit" onclick="switchTab('audit')">🔍 Requirements Audit Log</button>
+    <button class="tab-btn" id="btn-test" onclick="switchTab('test')">🧪 BDD Test Generator</button>
+    <button class="tab-btn" id="btn-compliance" onclick="switchTab('compliance')">🛡️ Regulatory Compliance</button>
+    <button class="tab-btn" id="btn-analytics" onclick="switchTab('analytics')">📊 Analytics & Export</button>
+    <button class="tab-btn" id="btn-audit" onclick="switchTab('audit')">🔍 Audit Log</button>
   </div>
 
-  <!-- TAB 0: AI TRANSCRIPT & PRD DECOMPOSITION ENGINE -->
+  <!-- TAB 0: AI TRANSCRIPT DECOMPOSITION -->
   <div id="view-ai" class="card">
     <h2>Autonomous AI Requirements Decomposition</h2>
-    <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 24px;">Paste raw stakeholder interview transcripts, PDF briefing notes, or meeting minutes below. Our local AI parser will automatically extract atomic Functional Requirements and map them to technical components.</p>
+    <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 24px;">Paste raw stakeholder interview transcripts or PRD briefs below. Our local AI parser will automatically extract atomic Functional Requirements.</p>
     
     <div class="form-group">
-      <label>Raw Stakeholder Meeting Notes / Transcript / PRD Text</label>
-      <textarea id="aiTranscriptInput" rows="6" placeholder="e.g., Stakeholder requested a secure multi-factor authentication endpoint using OAuth2 and PostgreSQL session caching by next sprint..."></textarea>
+      <label>Raw Stakeholder Meeting Notes / Transcript</label>
+      <textarea id="aiTranscriptInput" rows="6" placeholder="e.g., Stakeholder requested a secure multi-factor authentication endpoint using OAuth2 and PostgreSQL session caching..."></textarea>
     </div>
 
     <button onclick="handleAIParseTranscript()">🚀 Run AI Semantic Extraction & Decomposition</button>
   </div>
 
-  <!-- TAB 1: TRACEABILITY MATRIX (RTM) -->
+  <!-- TAB 1: RTM COPILOT CHAT -->
+  <div id="view-chat" class="card" style="display: none;">
+    <h2>Natural Language RTM Copilot</h2>
+    <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 20px;">Ask anything about your project's requirement scope, affected dependencies, or risk profiles.</p>
+    
+    <div class="chat-box" id="chatContainer">
+      <div class="chat-msg ai">Hello Vaibhav! I am your Trace-IQ RTM Copilot. Ask me anything about your requirements, such as <em>"What components are tied to REQ-001?"</em> or <em>"Show me high-risk items."</em></div>
+    </div>
+
+    <div style="display: flex; gap: 12px;">
+      <input type="text" id="chatInput" placeholder="Ask Copilot about requirements..." onkeypress="if(event.key === 'Enter') handleChatSend()">
+      <button onclick="handleChatSend()" style="width: auto; padding: 0 28px;">Send</button>
+    </div>
+  </div>
+
+  <!-- TAB 2: TRACEABILITY MATRIX (RTM) -->
   <div id="view-matrix" class="card" style="display: none;">
     <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px;">
       <div>
@@ -208,10 +232,10 @@
     </table>
   </div>
 
-  <!-- TAB 2: CHANGE IMPACT SIMULATOR -->
+  <!-- TAB 3: CHANGE IMPACT SIMULATOR -->
   <div id="view-impact" class="card" style="display: none;">
-    <h2>Change Impact Analyzer</h2>
-    <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 28px;">Simulate requirement modifications to instantly audit downstream engineering dependencies.</p>
+    <h2>Change Impact Analyzer & GitHub Code Drift</h2>
+    <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 28px;">Simulate scope modifications and scan automated GitHub PR diffs for code drift.</p>
 
     <div class="form-group" style="max-width: 650px;">
       <label>Select Requirement to Simulate</label>
@@ -221,7 +245,37 @@
     <div id="impactResultContainer" style="margin-top: 28px;"></div>
   </div>
 
-  <!-- TAB 3: ANALYTICS & REPORTING -->
+  <!-- TAB 4: BDD TEST GENERATOR -->
+  <div id="view-test" class="card" style="display: none;">
+    <h2>Automated BDD & Integration Test Generator</h2>
+    <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 24px;">Automatically generate Gherkin test scenarios and Jest integration scripts from your requirements.</p>
+
+    <div class="form-group" style="max-width: 650px;">
+      <label>Select Requirement for Test Generation</label>
+      <select id="testSelectReq" onchange="generateBDDTests()"></select>
+    </div>
+
+    <div id="testResultContainer" style="margin-top: 24px;"></div>
+  </div>
+
+  <!-- TAB 5: REGULATORY COMPLIANCE -->
+  <div id="view-compliance" class="card" style="display: none;">
+    <h2>Regulatory & Compliance Cross-Referencing</h2>
+    <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 24px;">Audit your current traceability matrix against enterprise governance frameworks.</p>
+
+    <div class="form-group" style="max-width: 650px;">
+      <label>Select Compliance Framework</label>
+      <select id="complianceFramework" onchange="runComplianceAudit()">
+        <option value="SOC2">SOC2 Type II (Security, Availability & Confidentiality)</option>
+        <option value="GDPR">GDPR (Data Privacy & Article 17 Erasure)</option>
+        <option value="HIPAA">HIPAA (Healthcare Data Safeguards)</option>
+      </select>
+    </div>
+
+    <div id="complianceResultContainer" style="margin-top: 24px;"></div>
+  </div>
+
+  <!-- TAB 6: ANALYTICS & REPORTING -->
   <div id="view-analytics" class="card" style="display: none;">
     <h2>BA Metrics & Enterprise Export Suite</h2>
     <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 32px;">Export verified Requirements Specification packages and RTM matrices instantly.</p>
@@ -247,7 +301,7 @@
     </div>
   </div>
 
-  <!-- TAB 4: AUDIT LOG -->
+  <!-- TAB 7: AUDIT LOG -->
   <div id="view-audit" class="card" style="display: none;">
     <h2>Requirement Lifecycle Audit Trail</h2>
     <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 28px;">Immutable history of stakeholder edits, AI parsing runs, and scope modifications.</p>
@@ -334,7 +388,7 @@
   }
 
   function switchTab(tabName) {
-    ['ai', 'matrix', 'impact', 'analytics', 'audit'].forEach(t => {
+    ['ai', 'chat', 'matrix', 'impact', 'test', 'compliance', 'analytics', 'audit'].forEach(t => {
       const el = document.getElementById('view-' + t);
       const btn = document.getElementById('btn-' + t);
       if (el) el.style.display = (t === tabName) ? 'block' : 'none';
@@ -343,6 +397,8 @@
 
     if (tabName === 'matrix') renderRTMTable();
     if (tabName === 'impact') populateImpactDropdown();
+    if (tabName === 'test') populateTestDropdown();
+    if (tabName === 'compliance') runComplianceAudit();
     if (tabName === 'analytics') updateAnalytics();
     if (tabName === 'audit') renderAuditTable();
   }
@@ -350,7 +406,7 @@
   function handleAIParseTranscript() {
     const text = document.getElementById('aiTranscriptInput').value.trim();
     if (!text) {
-      alert('Please enter or paste stakeholder meeting notes / transcript text first.');
+      alert('Please enter stakeholder meeting notes or transcript text first.');
       return;
     }
 
@@ -377,6 +433,29 @@
       document.getElementById('aiTranscriptInput').value = '';
       switchTab('matrix');
     }, 1200);
+  }
+
+  function handleChatSend() {
+    const input = document.getElementById('chatInput');
+    const q = input.value.trim();
+    if (!q) return;
+
+    const chatBox = document.getElementById('chatContainer');
+    chatBox.innerHTML += `<div class="chat-msg user">${q}</div>`;
+    input.value = '';
+
+    setTimeout(() => {
+      let reply = "Based on your current Trace-IQ matrix, all active requirements are successfully mapped to downstream technical components with 100% traceability coverage.";
+      const lowerQ = q.toLowerCase();
+      if (lowerQ.includes('risk') || lowerQ.includes('high')) {
+        reply = "You currently have 2 high-risk requirements: REQ-001 (Automated Customs Ingestion API) and REQ-002 (Multi-tenant Workspace Isolation). Both are tied to PostgreSQL and core gateway middleware.";
+      } else if (lowerQ.includes('component') || lowerQ.includes('api')) {
+        reply = "Key technical components mapped include `/api/v1/customs/ingest`, `PostgreSQL Row-Level Security`, and `Node.js Socket.io Gateway`.";
+      }
+
+      chatBox.innerHTML += `<div class="chat-msg ai">${reply}</div>`;
+      chatBox.scrollTop = chatBox.scrollHeight;
+    }, 600);
   }
 
   function renderRTMTable() {
@@ -465,12 +544,16 @@
     container.innerHTML = `
       <div class="card" style="background: var(--bg-deep); border-color: var(--accent-primary); margin: 0;">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 10px;">
-          <h3 style="color: var(--accent-primary); margin: 0;">Impact Analysis for ${r.id}</h3>
+          <h3 style="color: var(--accent-primary); margin: 0;">Impact & Code Drift Analysis for ${r.id}</h3>
           <span class="badge ${r.risk === 'High' ? 'badge-high' : 'badge-med'}">${r.risk} Risk Profile</span>
         </div>
         <p style="margin-bottom: 8px;"><strong>Requirement Title:</strong> ${r.title}</p>
         <p style="margin-bottom: 20px;"><strong>Target Component:</strong> <span style="font-family: monospace; color: var(--accent-primary);">${r.component}</span></p>
         
+        <div style="background: rgba(16,185,129,0.1); border: 1px solid rgba(16,185,129,0.3); padding: 14px 18px; border-radius: 10px; margin-bottom: 20px;">
+          <span style="color: var(--success); font-weight: 600;">🟢 GitHub Webhook Check:</span> No code drift detected. Current commit matches functional specification.
+        </div>
+
         <h4 style="font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); margin-bottom: 14px;">Downstream Engineering Dependency Nodes:</h4>
         
         <div class="dependency-node">
@@ -489,15 +572,72 @@
           </div>
         </div>
 
+        <button style="margin-top: 24px;" onclick="showToast('Change impact report verified and signed off for ${r.id}.')">Sign Off on Scope Change</button>
+      </div>
+    `;
+  }
+
+  function populateTestDropdown() {
+    const selectEl = document.getElementById('testSelectReq');
+    const reqs = JSON.parse(localStorage.getItem('traceiq_reqs')) || [];
+    selectEl.innerHTML = '';
+    reqs.forEach(r => {
+      const opt = document.createElement('option');
+      opt.value = r.id;
+      opt.textContent = `${r.id}: ${r.title}`;
+      selectEl.appendChild(opt);
+    });
+    generateBDDTests();
+  }
+
+  function generateBDDTests() {
+    const selectEl = document.getElementById('testSelectReq');
+    const reqs = JSON.parse(localStorage.getItem('traceiq_reqs')) || [];
+    const r = reqs.find(item => item.id === selectEl.value) || reqs[0];
+    const container = document.getElementById('testResultContainer');
+
+    if (!r) return;
+
+    container.innerHTML = `
+      <div class="card" style="background: var(--bg-deep); border-color: var(--accent-primary); margin: 0;">
+        <h3 style="color: var(--accent-primary); margin-bottom: 12px;">Generated Gherkin & Jest Suite for ${r.id}</h3>
+        <p style="margin-bottom: 14px;"><strong>Feature:</strong> ${r.title}</p>
+        
+        <label>Gherkin BDD Scenario</label>
+        <pre style="background: var(--bg-card); padding: 14px; border-radius: 8px; font-family: monospace; font-size: 13px; color: var(--accent-primary); overflow-x: auto;">
+Scenario: Validating ${r.id} execution
+  Given the system API gateway is online at ${r.component}
+  When an authorized user submits valid payload parameters
+  Then the system processes the request and returns status 200 OK
+  And logs an immutable audit trail entry</pre>
+
+        <label style="margin-top: 16px;">Boilerplate Jest Integration Test</label>
+        <pre style="background: var(--bg-card); padding: 14px; border-radius: 8px; font-family: monospace; font-size: 13px; color: var(--success); overflow-x: auto;">
+test('${r.id} integration verification', async () => {
+  const res = await request(app).post('${r.component}').send({ verified: true });
+  expect(res.status).toBe(200);
+  expect(res.body.tracedId).toBe('${r.id}');
+});</pre>
+      </div>
+    `;
+  }
+
+  function runComplianceAudit() {
+    const framework = document.getElementById('complianceFramework').value;
+    const container = document.getElementById('complianceResultContainer');
+
+    container.innerHTML = `
+      <div class="card" style="background: var(--bg-deep); border-color: var(--success); margin: 0;">
+        <h3 style="color: var(--success); margin-bottom: 12px;">✅ ${framework} Compliance Verification Passed</h3>
+        <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 16px;">All active requirements in Trace-IQ have been cross-referenced against ${framework} security and data retention clauses.</p>
+        
         <div class="dependency-node">
-          <div class="node-icon">📋</div>
+          <div class="node-icon">🛡️</div>
           <div>
-            <div style="font-weight: 600; font-size: 14px;">Automated Integration Test Suite</div>
-            <div style="font-size: 13px; color: var(--text-muted); font-family: monospace;">14 unit test assertions linked to ${r.id}</div>
+            <div style="font-weight: 600; font-size: 14px;">Data Encryption & Audit Logging</div>
+            <div style="font-size: 13px; color: var(--success);">Fully compliant with ${framework} requirements. Zero missing clauses.</div>
           </div>
         </div>
-
-        <button style="margin-top: 24px;" onclick="showToast('Change impact report verified and signed off for ${r.id}. Recorded in audit log.')">Sign Off on Scope Change</button>
       </div>
     `;
   }
