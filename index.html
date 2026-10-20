@@ -28,12 +28,11 @@
 
     .app-container { max-width: 1550px; margin: 0 auto; padding: 40px 24px; }
     
-    /* APPLE HEADER */
     header { background: rgba(28, 28, 30, 0.75); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid var(--border-color); border-radius: var(--radius); padding: 24px 32px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 32px; box-shadow: 0 20px 40px rgba(0,0,0,0.5); flex-wrap: wrap; gap: 20px; }
     .brand-area { display: flex; align-items: center; gap: 18px; }
     .logo-badge { background: linear-gradient(135deg, #0a84ff, #5e5ce6); width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 22px; color: #fff; box-shadow: 0 4px 12px rgba(10, 132, 255, 0.3); }
     
-    /* APPLE SEGMENTED NAVIGATION */
+    /* SEGMENTED NAVIGATION */
     .nav-tabs { 
       display: flex; 
       gap: 8px; 
@@ -77,6 +76,10 @@
     .btn-secondary:hover { background: var(--bg-hover); border-color: rgba(255,255,255,0.2); }
     .btn-small { padding: 6px 14px; font-size: 12px; width: auto !important; display: inline-block !important; }
 
+    /* ONBOARDING TOUR STYLES */
+    .tour-step { background: rgba(0,0,0,0.3); border: 1px solid var(--border-color); padding: 20px; border-radius: 12px; margin-bottom: 16px; display: flex; gap: 16px; align-items: flex-start; }
+    .tour-number { background: var(--accent); color: #fff; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600; flex-shrink: 0; }
+
     /* MODAL */
     .modal-overlay {
       display: none;
@@ -112,7 +115,6 @@
     .search-filter-bar { display: flex; gap: 16px; margin-bottom: 24px; flex-wrap: wrap; }
     .search-filter-bar input { flex: 1; min-width: 260px; }
 
-    /* DEPENDENCY NODES & CHAT */
     .dependency-node { display: flex; align-items: center; gap: 14px; background: var(--bg-card); border: 1px solid var(--border-color); padding: 16px 20px; border-radius: 12px; margin-bottom: 12px; }
     .node-icon { font-size: 18px; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; background: rgba(10,132,255,0.1); border-radius: 8px; }
 
@@ -121,7 +123,6 @@
     .chat-msg.user { background: var(--accent); color: #fff; align-self: flex-end; }
     .chat-msg.ai { background: var(--bg-card); border: 1px solid var(--border-color); color: var(--text-main); align-self: flex-start; }
 
-    /* TOAST */
     #toast {
       position: fixed;
       bottom: 30px;
@@ -155,14 +156,18 @@
         <p style="font-size: 0.8rem; margin: 2px 0 0 0; color: var(--text-muted);">Autonomous Requirements Intelligence & Compliance</p>
       </div>
     </div>
-    <div style="background: var(--bg-card); padding: 8px 16px; border-radius: 20px; border: 1px solid var(--border-color);">
-      <span style="font-size: 12px; color: var(--success); font-weight: 500; display: flex; align-items: center; gap: 6px;"><span style="width: 7px; height: 7px; background: var(--success); border-radius: 50%; display: inline-block;"></span> Core Active</span>
+    <div style="display: flex; gap: 12px; align-items: center;">
+      <div style="background: var(--bg-card); padding: 8px 16px; border-radius: 20px; border: 1px solid var(--border-color);">
+        <span style="font-size: 12px; color: var(--success); font-weight: 500; display: flex; align-items: center; gap: 6px;"><span style="width: 7px; height: 7px; background: var(--success); border-radius: 50%; display: inline-block;"></span> Core Active</span>
+      </div>
+      <button class="btn-small btn-secondary" onclick="toggleHelpTab()" id="helpToggleBtn">Hide Onboarding Tour</button>
     </div>
   </header>
 
   <!-- SEGMENTED NAVIGATION -->
-  <div class="nav-tabs">
-    <button class="tab-btn active" id="btn-ai" onclick="switchTab('ai')">🤖 AI Decomposition</button>
+  <div class="nav-tabs" id="navTabsContainer">
+    <button class="tab-btn active" id="btn-tour" onclick="switchTab('tour')">🧭 Guided Tour</button>
+    <button class="tab-btn" id="btn-ai" onclick="switchTab('ai')">🤖 AI Decomposition</button>
     <button class="tab-btn" id="btn-chat" onclick="switchTab('chat')">💬 RTM Copilot</button>
     <button class="tab-btn" id="btn-matrix" onclick="switchTab('matrix')">📋 Traceability Matrix</button>
     <button class="tab-btn" id="btn-impact" onclick="switchTab('impact')">⚡ Impact Analyzer</button>
@@ -172,8 +177,48 @@
     <button class="tab-btn" id="btn-audit" onclick="switchTab('audit')">🔍 Audit Log</button>
   </div>
 
+  <!-- TAB -1: GUIDED TOUR / ONBOARDING -->
+  <div id="view-tour" class="card">
+    <h2>Welcome to Trace-IQ, Vaibhav 👋</h2>
+    <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 28px;">This guided tour walks you through how to use Trace-IQ to eliminate requirements drift and automate your B2B technical workflows. Once you are accustomed to the app, click **"Hide Onboarding Tour"** at the top right.</p>
+
+    <div class="tour-step">
+      <div class="tour-number">1</div>
+      <div>
+        <h3 style="margin-bottom: 4px; font-size: 15px;">AI Transcript & PRD Decomposition</h3>
+        <p style="color: var(--text-muted); font-size: 13px; margin: 0;">Head over to the <strong>AI Decomposition</strong> tab, paste raw stakeholder meeting notes or PRD briefs, and let the semantic engine automatically extract atomic requirements.</p>
+      </div>
+    </div>
+
+    <div class="tour-step">
+      <div class="tour-number">2</div>
+      <div>
+        <h3 style="margin-bottom: 4px; font-size: 15px;">Natural Language RTM Copilot</h3>
+        <p style="color: var(--text-muted); font-size: 13px; margin: 0;">Use the <strong>RTM Copilot</strong> chat tab to ask questions about your project scope in plain English (e.g., *"What requirements are high risk?"*).</p>
+      </div>
+    </div>
+
+    <div class="tour-step">
+      <div class="tour-number">3</div>
+      <div>
+        <h3 style="margin-bottom: 4px; font-size: 15px;">Traceability Matrix & Change Impact</h3>
+        <p style="color: var(--text-muted); font-size: 13px; margin: 0;">Inspect your relational matrix in the <strong>Traceability Matrix</strong> tab, and test scope changes in the <strong>Impact Analyzer</strong> to check automated GitHub PR code drift.</p>
+      </div>
+    </div>
+
+    <div class="tour-step">
+      <div class="tour-number">4</div>
+      <div>
+        <h3 style="margin-bottom: 4px; font-size: 15px;">BDD Testing & Regulatory Compliance</h3>
+        <p style="color: var(--text-muted); font-size: 13px; margin: 0;">Generate Gherkin test scenarios and audit your workspace against SOC2, GDPR, or HIPAA frameworks instantly.</p>
+      </div>
+    </div>
+
+    <button style="margin-top: 10px;" onclick="switchTab('ai')">Start Exploring Trace-IQ →</button>
+  </div>
+
   <!-- TAB 0: AI DECOMPOSITION -->
-  <div id="view-ai" class="card">
+  <div id="view-ai" class="card" style="display: none;">
     <h2>Autonomous AI Requirements Decomposition</h2>
     <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 24px;">Paste raw stakeholder interview transcripts or PRD briefs. Our semantic parser extracts atomic Functional Requirements instantly.</p>
     
@@ -354,12 +399,32 @@
 
 <script>
   let currentUser = { name: 'Vaibhav Singh', role: 'Lead Business Analyst' };
+  let tourVisible = true;
 
   function showToast(message) {
     const toast = document.getElementById('toast');
     toast.textContent = message;
     toast.style.display = 'block';
     setTimeout(() => { toast.style.display = 'none'; }, 3000);
+  }
+
+  function toggleHelpTab() {
+    tourVisible = !tourVisible;
+    const tourBtn = document.getElementById('btn-tour');
+    const toggleBtn = document.getElementById('helpToggleBtn');
+    
+    if (tourVisible) {
+      tourBtn.style.display = 'flex';
+      toggleBtn.textContent = 'Hide Onboarding Tour';
+      showToast('Onboarding tour enabled.');
+    } else {
+      tourBtn.style.display = 'none';
+      toggleBtn.textContent = 'Show Onboarding Tour';
+      showToast('Onboarding tour hidden. You can restore it anytime.');
+      if (document.getElementById('view-tour').style.display === 'block') {
+        switchTab('ai');
+      }
+    }
   }
 
   function initSeedData() {
@@ -386,7 +451,7 @@
   }
 
   function switchTab(tabName) {
-    ['ai', 'chat', 'matrix', 'impact', 'test', 'compliance', 'analytics', 'audit'].forEach(t => {
+    ['tour', 'ai', 'chat', 'matrix', 'impact', 'test', 'compliance', 'analytics', 'audit'].forEach(t => {
       const el = document.getElementById('view-' + t);
       const btn = document.getElementById('btn-' + t);
       if (el) el.style.display = (t === tabName) ? 'block' : 'none';
@@ -598,7 +663,7 @@ Scenario: Validating ${r.id}
   }
 
   initSeedData();
-  switchTab('ai');
+  switchTab('tour');
 </script>
 
 </body>
