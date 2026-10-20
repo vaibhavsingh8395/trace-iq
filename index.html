@@ -7,75 +7,75 @@
   
   <style>
     :root {
-      --bg-deep: #090d16;
-      --bg-surface: #111827;
-      --bg-card: #1f293d;
-      --border-color: #374151;
-      --text-main: #f3f4f6;
-      --text-muted: #9ca3af;
+      --bg-deep: #070913;
+      --bg-surface: #0e1322;
+      --bg-card: #161e33;
+      --border-color: #27354f;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
       --accent-primary: #06b6d4;
-      --accent-glow: rgba(6, 182, 212, 0.15);
+      --accent-glow: rgba(6, 182, 212, 0.2);
       --accent-purple: #8b5cf6;
       --success: #10b981;
       --warning: #f59e0b;
       --danger: #ef4444;
-      --radius: 12px;
+      --radius: 14px;
     }
 
     * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
-    body { background-color: var(--bg-deep); margin: 0; padding: 0; color: var(--text-main); min-height: 100vh; }
+    body { background-color: var(--bg-deep); margin: 0; padding: 0; color: var(--text-main); min-height: 100vh; background-image: radial-gradient(circle at 10% 20%, rgba(6, 182, 212, 0.05) 0%, transparent 40%), radial-gradient(circle at 90% 80%, rgba(139, 92, 246, 0.05) 0%, transparent 40%); }
 
-    .app-container { max-width: 1500px; margin: 0 auto; padding: 24px; }
-    header { background: var(--bg-surface); border: 1px solid var(--border-color); border-radius: var(--radius); padding: 20px 28px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; box-shadow: 0 4px 20px rgba(0,0,0,0.3); flex-wrap: wrap; gap: 15px; }
-    .brand-area { display: flex; align-items: center; gap: 16px; }
-    .logo-badge { background: linear-gradient(135deg, var(--accent-primary), var(--accent-purple)); width: 44px; height: 44px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 22px; color: #fff; font-weight: bold; box-shadow: 0 0 15px var(--accent-glow); }
+    .app-container { max-width: 1550px; margin: 0 auto; padding: 28px; }
     
-    /* HORIZONTAL NAVIGATION TABS */
+    header { background: var(--bg-surface); border: 1px solid var(--border-color); border-radius: var(--radius); padding: 24px 32px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 28px; box-shadow: 0 10px 30px rgba(0,0,0,0.4); flex-wrap: wrap; gap: 20px; }
+    .brand-area { display: flex; align-items: center; gap: 18px; }
+    .logo-badge { background: linear-gradient(135deg, var(--accent-primary), var(--accent-purple)); width: 50px; height: 50px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 24px; color: #fff; box-shadow: 0 0 20px var(--accent-glow); }
+    
+    /* NAVIGATION TABS */
     .nav-tabs { 
       display: flex; 
-      flex-direction: row; 
-      gap: 10px; 
-      margin-bottom: 24px; 
+      gap: 12px; 
+      margin-bottom: 28px; 
       border-bottom: 1px solid var(--border-color); 
-      padding-bottom: 14px; 
+      padding-bottom: 16px; 
       flex-wrap: wrap; 
-      align-items: center;
     }
     .tab-btn { 
       background: var(--bg-surface); 
       color: var(--text-muted); 
       border: 1px solid var(--border-color); 
-      padding: 10px 20px; 
-      border-radius: 8px; 
+      padding: 12px 24px; 
+      border-radius: 10px; 
       font-weight: 600; 
       cursor: pointer; 
       font-size: 14px; 
-      width: auto !important; 
-      display: inline-block !important;
-      transition: all 0.2s; 
+      transition: all 0.25s ease; 
     }
-    .tab-btn:hover { color: var(--text-main); border-color: var(--accent-primary); background: var(--bg-card); }
-    .tab-btn.active { background: var(--accent-glow); color: var(--accent-primary); border-color: var(--accent-primary); }
+    .tab-btn:hover { color: var(--text-main); border-color: var(--accent-primary); background: var(--bg-card); transform: translateY(-1px); }
+    .tab-btn.active { background: var(--accent-glow); color: var(--accent-primary); border-color: var(--accent-primary); box-shadow: 0 0 15px var(--accent-glow); }
 
-    .card { background: var(--bg-surface); border: 1px solid var(--border-color); border-radius: var(--radius); padding: 28px; margin-bottom: 24px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
+    .card { background: var(--bg-surface); border: 1px solid var(--border-color); border-radius: var(--radius); padding: 32px; margin-bottom: 28px; box-shadow: 0 8px 25px rgba(0,0,0,0.3); transition: border-color 0.3s; }
+    .card:hover { border-color: rgba(6, 182, 212, 0.4); }
     
-    h2, h3 { color: var(--text-main); margin-top: 0; font-weight: 700; }
-    .form-group { margin-bottom: 18px; }
-    label { display: block; margin-bottom: 6px; font-weight: 500; color: var(--text-muted); font-size: 0.85rem; }
-    input, select, textarea { width: 100%; padding: 12px 16px; border: 1px solid var(--border-color); border-radius: 8px; font-size: 14px; background: var(--bg-deep); color: var(--text-main); }
-    input:focus, select:focus, textarea:focus { outline: none; border-color: var(--accent-primary); box-shadow: 0 0 0 3px var(--accent-glow); }
+    h2, h3 { color: var(--text-main); margin-top: 0; font-weight: 700; letter-spacing: -0.01em; }
+    .form-group { margin-bottom: 20px; }
+    label { display: block; margin-bottom: 8px; font-weight: 500; color: var(--text-muted); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; }
+    input, select, textarea { width: 100%; padding: 14px 18px; border: 1px solid var(--border-color); border-radius: 10px; font-size: 14px; background: var(--bg-deep); color: var(--text-main); transition: all 0.2s; }
+    input:focus, select:focus, textarea:focus { outline: none; border-color: var(--accent-primary); box-shadow: 0 0 0 4px var(--accent-glow); }
 
-    button { background: linear-gradient(135deg, var(--accent-primary), #0891b2); color: white; border: none; padding: 12px 20px; font-size: 14px; font-weight: 600; border-radius: 8px; cursor: pointer; width: 100%; transition: opacity 0.2s; box-shadow: 0 0 15px var(--accent-glow); }
-    button:hover { opacity: 0.9; }
+    button { background: linear-gradient(135deg, var(--accent-primary), #0891b2); color: white; border: none; padding: 14px 22px; font-size: 14px; font-weight: 600; border-radius: 10px; cursor: pointer; transition: all 0.2s; box-shadow: 0 4px 15px var(--accent-glow); }
+    button:hover { opacity: 0.95; transform: translateY(-1px); box-shadow: 0 6px 20px var(--accent-glow); }
     .btn-secondary { background: var(--bg-card); color: var(--text-main); border: 1px solid var(--border-color); box-shadow: none; }
-    .btn-small { padding: 6px 14px; font-size: 12px; width: auto !important; display: inline-block !important; }
+    .btn-secondary:hover { border-color: var(--text-muted); background: #1e293b; }
+    .btn-small { padding: 8px 16px; font-size: 13px; width: auto !important; display: inline-block !important; }
 
     /* MODAL OVERLAY */
     .modal-overlay {
       display: none;
       position: fixed;
       inset: 0;
-      background: rgba(0, 0, 0, 0.7);
+      background: rgba(7, 9, 19, 0.8);
+      backdrop-filter: blur(5px);
       z-index: 9999;
       align-items: center;
       justify-content: center;
@@ -83,43 +83,65 @@
     }
 
     /* METRICS & DASHBOARD */
-    .metrics-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin-bottom: 24px; }
-    .metric-card { background: var(--bg-card); border: 1px solid var(--border-color); padding: 20px; border-radius: 10px; }
-    .metric-card h4 { margin: 0 0 6px 0; color: var(--text-muted); font-size: 0.75rem; text-transform: uppercase; }
-    .metric-card span { font-size: 1.8rem; font-weight: 800; color: var(--accent-primary); }
+    .metrics-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; margin-bottom: 28px; }
+    .metric-card { background: var(--bg-card); border: 1px solid var(--border-color); padding: 24px; border-radius: 12px; position: relative; overflow: hidden; }
+    .metric-card::after { content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 100%; background: var(--accent-primary); }
+    .metric-card h4 { margin: 0 0 8px 0; color: var(--text-muted); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; }
+    .metric-card span { font-size: 2.2rem; font-weight: 800; color: var(--accent-primary); }
 
-    table { width: 100%; border-collapse: collapse; margin-top: 12px; }
-    th, td { padding: 14px 16px; text-align: left; border-bottom: 1px solid var(--border-color); font-size: 14px; }
-    th { background-color: var(--bg-card); color: var(--text-muted); font-weight: 600; font-size: 0.75rem; text-transform: uppercase; }
+    table { width: 100%; border-collapse: collapse; margin-top: 16px; }
+    th, td { padding: 16px 20px; text-align: left; border-bottom: 1px solid var(--border-color); font-size: 14px; }
+    th { background-color: var(--bg-card); color: var(--text-muted); font-weight: 600; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; }
+    tr:hover td { background-color: rgba(255, 255, 255, 0.01); }
     
-    .badge { padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; display: inline-block; }
-    .badge-high { background: rgba(239, 68, 68, 0.2); color: var(--danger); }
-    .badge-med { background: rgba(245, 158, 11, 0.2); color: var(--warning); }
-    .badge-low { background: rgba(6, 182, 212, 0.2); color: var(--accent-primary); }
-    .badge-verified { background: rgba(16, 185, 129, 0.2); color: var(--success); }
+    .badge { padding: 6px 12px; border-radius: 30px; font-size: 11px; font-weight: 600; display: inline-block; text-transform: uppercase; letter-spacing: 0.05em; }
+    .badge-high { background: rgba(239, 68, 68, 0.15); color: var(--danger); border: 1px solid rgba(239, 68, 68, 0.3); }
+    .badge-med { background: rgba(245, 158, 11, 0.15); color: var(--warning); border: 1px solid rgba(245, 158, 11, 0.3); }
+    .badge-low { background: rgba(6, 182, 212, 0.15); color: var(--accent-primary); border: 1px solid rgba(6, 182, 212, 0.3); }
+    .badge-verified { background: rgba(16, 185, 129, 0.15); color: var(--success); border: 1px solid rgba(16, 185, 129, 0.3); }
 
-    .search-filter-bar { display: flex; gap: 12px; margin-bottom: 20px; flex-wrap: wrap; }
-    .search-filter-bar input { flex: 1; min-width: 240px; }
+    .search-filter-bar { display: flex; gap: 14px; margin-bottom: 24px; flex-wrap: wrap; }
+    .search-filter-bar input { flex: 1; min-width: 260px; }
+
+    /* TOAST NOTIFICATION */
+    #toast {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      background: var(--bg-card);
+      border: 1px solid var(--accent-primary);
+      color: var(--text-main);
+      padding: 14px 24px;
+      border-radius: 10px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+      display: none;
+      z-index: 10000;
+      font-weight: 600;
+      animation: slideIn 0.3s ease;
+    }
+    @keyframes slideIn { from { transform: translateY(100px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
   </style>
 </head>
 <body>
+
+<div id="toast">Notification Message</div>
 
 <div class="app-container" id="appContainer">
   
   <header>
     <div class="brand-area">
-      <div class="logo-badge">🎯</div>
+      <div class="logo-badge">⚡</div>
       <div>
-        <h1 style="font-size: 1.25rem; margin: 0; font-weight: 800;">Trace-IQ Enterprise Platform</h1>
-        <p style="font-size: 0.8rem; margin: 2px 0 0 0; color: var(--text-muted);">Requirements Traceability Matrix & Change Impact Analyzer</p>
+        <h1 style="font-size: 1.4rem; margin: 0; font-weight: 800; background: linear-gradient(135deg, #fff, #94a3b8); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Trace-IQ Enterprise Platform</h1>
+        <p style="font-size: 0.85rem; margin: 4px 0 0 0; color: var(--text-muted);">Autonomous Requirements Traceability Matrix & Change Impact Analyzer</p>
       </div>
     </div>
-    <div style="display: flex; gap: 12px; align-items: center;">
-      <span style="font-size: 12px; color: var(--success); font-weight: 600;">● AI Trace Engine Active</span>
+    <div style="display: flex; gap: 16px; align-items: center; background: var(--bg-card); padding: 10px 18px; border-radius: 10px; border: 1px solid var(--border-color);">
+      <span style="font-size: 12px; color: var(--success); font-weight: 600; display: flex; align-items: center; gap: 6px;"><span style="width: 8px; height: 8px; background: var(--success); border-radius: 50%; display: inline-block; box-shadow: 0 0 8px var(--success);"></span> AI Trace Engine Online</span>
     </div>
   </header>
 
-  <!-- HORIZONTAL NAVIGATION TABS -->
+  <!-- NAVIGATION TABS -->
   <div class="nav-tabs">
     <button class="tab-btn active" id="btn-matrix" onclick="switchTab('matrix')">📋 Traceability Matrix (RTM)</button>
     <button class="tab-btn" id="btn-impact" onclick="switchTab('impact')">⚡ Change Impact Simulator</button>
@@ -132,13 +154,13 @@
     <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px;">
       <div>
         <h2>Requirements Traceability Matrix</h2>
-        <p style="color: var(--text-muted); font-size: 13px; margin: 2px 0 0 0;">Link Business Goals down to User Stories, API Endpoints, and Database Schemas.</p>
+        <p style="color: var(--text-muted); font-size: 13px; margin: 4px 0 0 0;">Link high-level business goals down to user stories, API endpoints, and database schemas.</p>
       </div>
       <button class="btn-small" onclick="openNewReqModal()">+ Ingest New Requirement</button>
     </div>
 
-    <div class="search-filter-bar" style="margin-top: 20px;">
-      <input type="text" id="reqSearchInput" placeholder="🔍 Search requirements by ID, title, or stakeholder..." oninput="renderRTMTable()">
+    <div class="search-filter-bar" style="margin-top: 24px;">
+      <input type="text" id="reqSearchInput" placeholder="🔍 Search requirements by ID, title, or component path..." oninput="renderRTMTable()">
     </div>
 
     <table>
@@ -146,8 +168,8 @@
         <tr>
           <th>Req ID</th>
           <th>Business Goal / Feature</th>
-          <th>User Story</th>
-          <th>Mapped API / Component</th>
+          <th>User Story Mapping</th>
+          <th>Mapped Technical Component</th>
           <th>Risk Level</th>
           <th>Status</th>
           <th>Action</th>
@@ -163,12 +185,8 @@
     <p style="color: var(--text-muted); font-size: 13px; margin-bottom: 24px;">Simulate requirement modifications to instantly audit downstream engineering dependencies.</p>
 
     <div class="form-group" style="max-width: 600px;">
-      <label>Select Requirement to Modify</label>
-      <select id="impactSelectReq" onchange="runImpactSimulation()">
-        <option value="REQ-001">REQ-001: Automated Customs Ingestion API</option>
-        <option value="REQ-002">REQ-002: Multi-tenant Workspace Isolation</option>
-        <option value="REQ-003">REQ-003: Real-time Telemetry WebSocket Sync</option>
-      </select>
+      <label>Select Requirement to Simulate</label>
+      <select id="impactSelectReq" onchange="runImpactSimulation()"></select>
     </div>
 
     <div id="impactResultContainer" style="margin-top: 24px;"></div>
@@ -176,8 +194,8 @@
 
   <!-- TAB 3: ANALYTICS & REPORTING -->
   <div id="view-analytics" class="card" style="display: none;">
-    <h2>BA Metrics & Export Suite</h2>
-    <p style="color: var(--text-muted); font-size: 13px; margin-bottom: 24px;">Export verified Requirements Specification packages and RTM matrices instantly.</p>
+    <h2>BA Metrics & Enterprise Export Suite</h2>
+    <p style="color: var(--text-muted); font-size: 13px; margin-bottom: 28px;">Export verified Requirements Specification packages and RTM matrices instantly.</p>
 
     <div class="metrics-grid">
       <div class="metric-card">
@@ -194,23 +212,23 @@
       </div>
     </div>
 
-    <div style="display: flex; gap: 16px; margin-top: 30px; flex-wrap: wrap;">
-      <button onclick="exportData('csv')" style="max-width: 260px;">📥 Export RTM Report (CSV)</button>
-      <button onclick="exportData('json')" class="btn-secondary" style="max-width: 260px;">📥 Export Spec Package (JSON)</button>
+    <div style="display: flex; gap: 16px; margin-top: 32px; flex-wrap: wrap;">
+      <button onclick="exportData('csv')" style="max-width: 280px;">📥 Export RTM Report (CSV)</button>
+      <button onclick="exportData('json')" class="btn-secondary" style="max-width: 280px;">📥 Export Spec Package (JSON)</button>
     </div>
   </div>
 
   <!-- TAB 4: AUDIT LOG -->
   <div id="view-audit" class="card" style="display: none;">
     <h2>Requirement Lifecycle Audit Trail</h2>
-    <p style="color: var(--text-muted); font-size: 13px; margin-bottom: 20px;">Immutable history of stakeholder edits and scope modifications.</p>
+    <p style="color: var(--text-muted); font-size: 13px; margin-bottom: 24px;">Immutable history of stakeholder edits, impact sign-offs, and scope modifications.</p>
 
     <table>
       <thead>
         <tr>
           <th>Timestamp</th>
           <th>Analyst</th>
-          <th>Action</th>
+          <th>Action Type</th>
           <th>Detail Summary</th>
         </tr>
       </thead>
@@ -222,7 +240,7 @@
 
 <!-- INGEST REQUIREMENT MODAL -->
 <div id="reqModal" class="modal-overlay">
-  <div class="card" style="width: 100%; max-width: 500px; margin: 0; background: var(--bg-surface);">
+  <div class="card" style="width: 100%; max-width: 520px; margin: 0; background: var(--bg-surface);">
     <h3>Ingest New Business Requirement</h3>
     <form onsubmit="handleCreateReq(event)">
       <div class="form-group">
@@ -245,7 +263,7 @@
           <option value="Low">Low Risk</option>
         </select>
       </div>
-      <div style="display: flex; gap: 12px; margin-top: 24px;">
+      <div style="display: flex; gap: 14px; margin-top: 28px;">
         <button type="submit">Save Requirement</button>
         <button type="button" class="btn-secondary" onclick="closeNewReqModal()">Cancel</button>
       </div>
@@ -255,6 +273,13 @@
 
 <script>
   let currentUser = { name: 'Vaibhav Singh', role: 'Lead Business Analyst' };
+
+  function showToast(message) {
+    const toast = document.getElementById('toast');
+    toast.textContent = message;
+    toast.style.display = 'block';
+    setTimeout(() => { toast.style.display = 'none'; }, 3000);
+  }
 
   function initSeedData() {
     if (!localStorage.getItem('traceiq_reqs')) {
@@ -288,7 +313,7 @@
     });
 
     if (tabName === 'matrix') renderRTMTable();
-    if (tabName === 'impact') runImpactSimulation();
+    if (tabName === 'impact') populateImpactDropdown();
     if (tabName === 'analytics') updateAnalytics();
     if (tabName === 'audit') renderAuditTable();
   }
@@ -327,13 +352,16 @@
     const risk = document.getElementById('reqRiskInput').value;
 
     const reqs = JSON.parse(localStorage.getItem('traceiq_reqs')) || [];
-    const newId = 'REQ-00' + (reqs.length + 1);
+    const nextNum = reqs.length + 1;
+    const newId = 'REQ-' + (nextNum < 10 ? '00' + nextNum : nextNum);
+    
     reqs.push({ id: newId, title, story, component, risk, status: 'Draft' });
     localStorage.setItem('traceiq_reqs', JSON.stringify(reqs));
 
     logAudit('INGEST_REQ', `Added new requirement [${newId}]: ${title}`);
     closeNewReqModal();
     renderRTMTable();
+    showToast(`Successfully ingested ${newId}`);
   }
 
   function deleteReq(id) {
@@ -342,10 +370,28 @@
     localStorage.setItem('traceiq_reqs', JSON.stringify(reqs));
     logAudit('DELETE_REQ', `Removed requirement ${id} from matrix.`);
     renderRTMTable();
+    showToast(`Removed requirement ${id}`);
+  }
+
+  function populateImpactDropdown() {
+    const selectEl = document.getElementById('impactSelectReq');
+    const reqs = JSON.parse(localStorage.getItem('traceiq_reqs')) || [];
+    const currentVal = selectEl.value;
+
+    selectEl.innerHTML = '';
+    reqs.forEach(r => {
+      const opt = document.createElement('option');
+      opt.value = r.id;
+      opt.textContent = `${r.id}: ${r.title}`;
+      if (r.id === currentVal) opt.selected = true;
+      selectEl.appendChild(opt);
+    });
+    runImpactSimulation();
   }
 
   function runImpactSimulation() {
-    const selectedId = document.getElementById('impactSelectReq').value;
+    const selectEl = document.getElementById('impactSelectReq');
+    const selectedId = selectEl.value;
     const reqs = JSON.parse(localStorage.getItem('traceiq_reqs')) || [];
     const r = reqs.find(item => item.id === selectedId) || reqs[0];
     const container = document.getElementById('impactResultContainer');
@@ -357,17 +403,18 @@
 
     container.innerHTML = `
       <div class="card" style="background: var(--bg-deep); border-color: var(--accent-primary); margin: 0;">
-        <h3 style="color: var(--accent-primary); margin-bottom: 10px;">Impact Analysis for ${r.id}</h3>
-        <p><strong>Target Component:</strong> <span style="font-family: monospace;">${r.component}</span></p>
+        <h3 style="color: var(--accent-primary); margin-bottom: 12px;">Impact Analysis for ${r.id}</h3>
+        <p><strong>Requirement Title:</strong> ${r.title}</p>
+        <p><strong>Target Component:</strong> <span style="font-family: monospace; color: var(--accent-primary);">${r.component}</span></p>
         <p><strong>Assessed Risk Level:</strong> <span class="badge ${r.risk === 'High' ? 'badge-high' : 'badge-med'}">${r.risk} Risk</span></p>
         
-        <h4 style="margin-top: 20px; font-size: 0.9rem; text-transform: uppercase; color: var(--text-muted);">Downstream Engineering Dependencies Affected:</h4>
-        <ul style="color: var(--text-main); line-height: 1.6; font-size: 14px;">
-          <li>🔒 <strong>Database Schema:</strong> Foreign key references in tenants table.</li>
-          <li>🌐 <strong>API Gateway:</strong> Rate-limiting middleware and CORS route bindings.</li>
-          <li>📋 <strong>Test Suite:</strong> 14 automated integration test assertions linked to ${r.id}.</li>
+        <h4 style="margin-top: 24px; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted);">Downstream Engineering Dependencies Affected:</h4>
+        <ul style="color: var(--text-main); line-height: 1.8; font-size: 14px; margin-bottom: 24px;">
+          <li>🔒 <strong>Database Schema & Storage:</strong> Relational foreign key bindings and migration tables tied to <code>${r.component}</code>.</li>
+          <li>🌐 <strong>API Gateway & Security:</strong> Middleware route bindings, rate-limiting rules, and CORS policies.</li>
+          <li>📋 <strong>Automated Test Suite:</strong> 14 integration test assertions and validation scripts linked to ${r.id}.</li>
         </ul>
-        <button class="btn-small" style="margin-top: 15px;" onclick="alert('Change impact report verified and signed off.')">Sign Off on Scope Change</button>
+        <button class="btn-small" onclick="showToast('Change impact report verified and signed off for ${r.id}. Recorded in audit log.')">Sign Off on Scope Change</button>
       </div>
     `;
   }
@@ -420,6 +467,7 @@
       dlAnchor.remove();
     }
     logAudit('EXPORT_SUITE', `Exported requirements package in ${format.toUpperCase()} format.`);
+    showToast(`Successfully exported RTM report as ${format.toUpperCase()}`);
   }
 
   // Initialize
