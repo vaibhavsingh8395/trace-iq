@@ -173,14 +173,18 @@
   <div class="card" style="width: 100%; max-width: 420px; margin: 0; background: var(--bg-surface); text-align: center;">
     <div class="logo-badge" style="margin: 0 auto 16px auto;">💠</div>
     <h3>Sign In to Trace-IQ</h3>
-    <p style="color: var(--text-muted); font-size: 13px; margin-bottom: 24px;">Enter your email to sign in securely and access your isolated requirements sandbox.</p>
+    <p style="color: var(--text-muted); font-size: 13px; margin-bottom: 24px;">Enter your credentials to access your isolated requirements sandbox.</p>
     
-    <form onsubmit="handleEmailLogin(event)">
+    <form onsubmit="handlePasswordLogin(event)">
       <div class="form-group" style="text-align: left;">
         <label>Email Address</label>
-        <input type="email" id="loginEmail" placeholder="analyst@enterprise.com" required>
+        <input type="email" id="loginEmail" placeholder="vaibz8385@gmail.com" required>
       </div>
-      <button type="submit" style="width: 100%;">Send Magic Link / Sign In</button>
+      <div class="form-group" style="text-align: left;">
+        <label>Password</label>
+        <input type="password" id="loginPassword" placeholder="••••••••" required>
+      </div>
+      <button type="submit" style="width: 100%;">Sign In Instantly</button>
     </form>
   </div>
 </div>
@@ -475,7 +479,7 @@
     setTimeout(() => { toast.style.display = 'none'; }, 3000);
   }
 
-  // AUTHENTICATION LOGIC
+  // AUTHENTICATION LOGIC (Email & Password)
   async function checkUserSession() {
     const { data: { session } } = await supabase.auth.getSession();
     if (session) {
@@ -496,14 +500,18 @@
     }
   }
 
-  async function handleEmailLogin(e) {
+  async function handlePasswordLogin(e) {
     e.preventDefault();
     const email = document.getElementById('loginEmail').value.trim();
-    const { error } = await supabase.auth.signInWithOtp({ email, options: { emailRedirectTo: window.location.href } });
+    const password = document.getElementById('loginPassword').value.trim();
+    
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+    
     if (error) {
-      showToast('Error: ' + error.message);
+      showToast('Login Failed: ' + error.message);
     } else {
-      showToast('Magic link sent! Check your email to sign in.');
+      showToast('Signed in successfully!');
+      checkUserSession();
     }
   }
 
