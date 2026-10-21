@@ -168,14 +168,14 @@
 
 <div id="toast">Notification Message</div>
 
-<!-- SUPABASE AUTHENTICATION LOGIN MODAL -->
+<!-- LOGIN MODAL -->
 <div id="loginModal" class="modal-overlay" style="display: flex;">
   <div class="card" style="width: 100%; max-width: 420px; margin: 0; background: var(--bg-surface); text-align: center;">
     <div class="logo-badge" style="margin: 0 auto 16px auto;">💠</div>
     <h3>Sign In to Trace-IQ</h3>
     <p style="color: var(--text-muted); font-size: 13px; margin-bottom: 24px;">Authenticate with your Supabase secure account.</p>
     
-    <form onsubmit="handlePasswordLogin(event)">
+    <form onsubmit="handleCustomLogin(event)">
       <div class="form-group" style="text-align: left;">
         <label>Email Address</label>
         <input type="email" id="loginEmail" placeholder="vaibz8385@gmail.com" required>
@@ -389,7 +389,7 @@
     </div>
   </div>
 
-  <!-- TAB 7: ADMIN APPROVAL PORTAL (Admin Only) -->
+  <!-- TAB 7: ADMIN APPROVAL PORTAL -->
   <div id="view-admin" class="card" style="display: none;">
     <h2>Admin Approval & Review Portal</h2>
     <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 24px;">Review pending requirements submitted across all tester sandboxes and approve them into the master RTM.</p>
@@ -399,7 +399,7 @@
         <tr>
           <th>Req ID</th>
           <th>Title & Goal</th>
-          <th>Submitted By (User ID)</th>
+          <th>Submitted By</th>
           <th>Status</th>
           <th>Action</th>
         </tr>
@@ -479,13 +479,15 @@
     setTimeout(() => { toast.style.display = 'none'; }, 3000);
   }
 
-  // AUTHENTICATION & SESSION HANDLING VIA SUPABASE
-  async function checkUserSession() {
-    const { data: { session }, error } = await supabase.auth.getSession();
-    if (session && session.user) {
-      currentUser = session.user;
-      isAdmin = currentUser.email === 'vaibz8385@gmail.com';
-      
+  // SESSION & CUSTOM AUTHENTICATION CHECK
+  function checkUserSession() {
+    const savedEmail = localStorage.getItem('trace_iq_user');
+    const savedAdmin = localStorage.getItem('trace_iq_admin') === 'true';
+
+    if (savedEmail) {
+      currentUser = { email: savedEmail };
+      isAdmin = savedAdmin;
+
       document.getElementById('loginModal').style.display = 'none';
       document.getElementById('authStatusText').textContent = currentUser.email;
       document.getElementById('userHeaderSub').textContent = isAdmin ? 'Master Admin Session Active' : 'User Sandbox Active';
@@ -500,27 +502,36 @@
     }
   }
 
-  async function handlePasswordLogin(e) {
+  async function handleCustomLogin(e) {
     e.preventDefault();
     const email = document.getElementById('loginEmail').value.trim();
     const password = document.getElementById('loginPassword').value.trim();
-    
-    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-    
-    if (error) {
-      showToast('Login Failed: ' + error.message);
+
+    // Query profiles table
+    const { data, error } = await supabase
+      .from('profiles')
+      .select('*')
+      .eq('email', email)
+      .eq('password', password)
+      .single();
+
+    if (error || !data) {
+      showToast('Login Failed: Invalid email or password.');
     } else {
+      localStorage.setItem('trace_iq_user', data.email);
+      localStorage.setItem('trace_iq_admin', data.is_admin ? 'true' : 'false');
       showToast('Signed in successfully!');
       checkUserSession();
     }
   }
 
-  async function handleLogout() {
-    await supabase.auth.signOut();
+  function handleLogout() {
+    localStorage.removeItem('trace_iq_user');
+    localStorage.removeItem('trace_iq_admin');
     location.reload();
   }
 
-  // DATABASE FETCHING WITH RLS
+  // DATABASE FETCHING
   async function fetchRequirements() {
     let query = supabase.from('requirements').select('*');
     const { data, error } = await query;
@@ -543,7 +554,7 @@
     const newReqId = 'REQ-00' + Math.floor(Math.random() * 900 + 100);
 
     const { error } = await supabase.from('requirements').insert([
-      { req_id: newReqId, title, user_story: story, component, risk, status: 'Pending Review', is_approved: false, user_id: currentUser.id }
+      { req_id: newReqId, title, user_story: story, component, risk, status: 'Pending Review', is_approved: false, user_email: currentUser.email }
     ]);
 
     if (error) {
@@ -580,7 +591,7 @@
       row.innerHTML = `
         <td><strong>${r.req_id}</strong></td>
         <td>${r.title}</td>
-        <td style="font-size: 12px; color: var(--text-muted); font-family: monospace;">${r.user_id}</td>
+        <td style="font-size: 12px; color: var(--text-muted); font-family: monospace;">${r.user_email}</td>
         <td><span class="badge badge-med">Pending Review</span></td>
         <td><button class="btn-small" onclick="approveRequirement('${r.id}')">Approve Scope</button></td>
       `;
