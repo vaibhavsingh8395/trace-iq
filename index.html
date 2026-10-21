@@ -187,7 +187,7 @@
         <label>Password</label>
         <div class="password-wrapper">
           <input type="password" id="loginPassword" placeholder="••••••••" value="admin@123" required>
-          <button type="button" class="toggle-password" id="togglePassBtn">Show</button>
+          <button type="button" class="toggle-password" id="togglePassBtn" onclick="togglePasswordVisibility()">Show</button>
         </div>
       </div>
       <button type="submit" id="loginSubmitBtn" style="width: 100%; margin-top: 10px;">Sign In Instantly</button>
@@ -503,6 +503,20 @@
     setTimeout(() => { toast.style.display = 'none'; }, 3000);
   }
 
+  function togglePasswordVisibility() {
+    const passInput = document.getElementById('loginPassword');
+    const toggleBtn = document.getElementById('togglePassBtn');
+    if (!passInput || !toggleBtn) return;
+    
+    if (passInput.type === 'password') {
+      passInput.type = 'text';
+      toggleBtn.textContent = 'Hide';
+    } else {
+      passInput.type = 'password';
+      toggleBtn.textContent = 'Show';
+    }
+  }
+
   function checkUserSession() {
     const savedEmail = localStorage.getItem('trace_iq_user');
     const savedAdmin = localStorage.getItem('trace_iq_admin') === 'true';
@@ -536,7 +550,8 @@
     // Check if Gemini API key is configured
     const savedApiKey = localStorage.getItem('trace_iq_gemini_key');
     if (!savedApiKey) {
-      document.getElementById('apiKeyModal').style.display = 'flex';
+      const apiKeyModal = document.getElementById('apiKeyModal');
+      if (apiKeyModal) apiKeyModal.style.display = 'flex';
     }
   }
 
