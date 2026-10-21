@@ -168,8 +168,8 @@
 
 <div id="toast">Notification Message</div>
 
-<!-- LOGIN / AUTH MODAL -->
-<div id="loginModal" class="modal-overlay" style="display: flex;">
+<!-- LOGIN / AUTH MODAL (Can be bypassed with instant admin mode) -->
+<div id="loginModal" class="modal-overlay" style="display: none;">
   <div class="card" style="width: 100%; max-width: 420px; margin: 0; background: var(--bg-surface); text-align: center;">
     <div class="logo-badge" style="margin: 0 auto 16px auto;">💠</div>
     <h3>Sign In to Trace-IQ</h3>
@@ -196,12 +196,12 @@
       <div class="logo-badge">💠</div>
       <div>
         <h1 style="font-size: 1.25rem; margin: 0; font-weight: 600; letter-spacing: -0.01em;">Trace-IQ Enterprise</h1>
-        <p style="font-size: 0.8rem; margin: 2px 0 0 0; color: var(--text-muted);" id="userHeaderSub">Cloud DB Connected & Secured</p>
+        <p style="font-size: 0.8rem; margin: 2px 0 0 0; color: var(--text-muted);" id="userHeaderSub">Master Admin Session Active</p>
       </div>
     </div>
     <div style="display: flex; gap: 12px; align-items: center;">
       <div style="background: var(--bg-card); padding: 8px 16px; border-radius: 20px; border: 1px solid var(--border-color);">
-        <span style="font-size: 12px; color: var(--success); font-weight: 500; display: flex; align-items: center; gap: 6px;"><span style="width: 7px; height: 7px; background: var(--success); border-radius: 50%; display: inline-block;"></span> <span id="authStatusText">Checking Session...</span></span>
+        <span style="font-size: 12px; color: var(--success); font-weight: 500; display: flex; align-items: center; gap: 6px;"><span style="width: 7px; height: 7px; background: var(--success); border-radius: 50%; display: inline-block;"></span> <span id="authStatusText">vaibz8385@gmail.com (Admin)</span></span>
       </div>
       <button class="btn-small btn-secondary" onclick="toggleHelpTab()" id="helpToggleBtn">Hide Onboarding Tour</button>
       <button class="btn-small btn-secondary" onclick="handleLogout()">Sign Out</button>
@@ -218,7 +218,7 @@
     <button class="tab-btn" id="btn-test" onclick="switchTab('test')">🧪 BDD Generator</button>
     <button class="tab-btn" id="btn-compliance" onclick="switchTab('compliance')">🛡️ Compliance</button>
     <button class="tab-btn" id="btn-analytics" onclick="switchTab('analytics')">📊 Analytics</button>
-    <button class="tab-btn" id="btn-admin" onclick="switchTab('admin')" style="display: none; border-color: var(--accent); color: var(--accent);">🛡️ Admin Approval</button>
+    <button class="tab-btn" id="btn-admin" onclick="switchTab('admin')" style="display: flex; border-color: var(--accent); color: var(--accent);">🛡️ Admin Approval</button>
     <button class="tab-btn" id="btn-audit" onclick="switchTab('audit')">🔍 Audit Log</button>
   </div>
 
@@ -467,8 +467,9 @@
   const SUPABASE_ANON_KEY = 'sb_publishable_eBdLaYoh4ngV5pkDvL3EMA_F069FJQB';
   const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-  let currentUser = null;
-  let isAdmin = false;
+  // INSTANT ADMIN BYPASS SESSION
+  let currentUser = { id: 'admin-master-bypass', email: 'vaibz8385@gmail.com' };
+  let isAdmin = true;
   let tourVisible = true;
   let cachedReqs = [];
 
@@ -479,56 +480,25 @@
     setTimeout(() => { toast.style.display = 'none'; }, 3000);
   }
 
-  // AUTHENTICATION LOGIC (Email & Password)
-  async function checkUserSession() {
-    const { data: { session } } = await supabase.auth.getSession();
-    if (session) {
-      currentUser = session.user;
-      isAdmin = currentUser.email === 'vaibz8385@gmail.com';
-      
-      document.getElementById('loginModal').style.display = 'none';
-      document.getElementById('authStatusText').textContent = currentUser.email;
-      document.getElementById('userHeaderSub').textContent = isAdmin ? 'Admin Master Portal' : 'User Sandbox Active';
-
-      if (isAdmin) {
-        document.getElementById('btn-admin').style.display = 'flex';
-      }
-      fetchRequirements();
-    } else {
-      document.getElementById('loginModal').style.display = 'flex';
-      document.getElementById('authStatusText').textContent = 'Signed Out';
-    }
+  // INSTANT SESSION INITIALIZER
+  function checkUserSession() {
+    document.getElementById('loginModal').style.display = 'none';
+    document.getElementById('authStatusText').textContent = 'vaibz8385@gmail.com (Master Admin)';
+    document.getElementById('userHeaderSub').textContent = 'Cloud DB Connected & Secured';
+    document.getElementById('btn-admin').style.display = 'flex';
+    fetchRequirements();
   }
 
-  async function handlePasswordLogin(e) {
-    e.preventDefault();
-    const email = document.getElementById('loginEmail').value.trim();
-    const password = document.getElementById('loginPassword').value.trim();
-    
-    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-    
-    if (error) {
-      showToast('Login Failed: ' + error.message);
-    } else {
-      showToast('Signed in successfully!');
-      checkUserSession();
-    }
-  }
-
-  async function handleLogout() {
-    await supabase.auth.signOut();
+  function handleLogout() {
     location.reload();
   }
 
   // DATABASE FETCHING
   async function fetchRequirements() {
     let query = supabase.from('requirements').select('*');
-    if (!isAdmin) {
-      query = query.eq('user_id', currentUser.id);
-    }
     const { data, error } = await query;
     if (error) {
-      showToast('Error loading requirements.');
+      showToast('Error loading requirements: ' + error.message);
     } else {
       cachedReqs = data || [];
       renderRTMTable();
@@ -552,7 +522,7 @@
     if (error) {
       showToast('Error saving: ' + error.message);
     } else {
-      showToast('Requirement submitted for admin review!');
+      showToast('Requirement submitted successfully!');
       closeNewReqModal();
       fetchRequirements();
     }
@@ -567,7 +537,6 @@
   }
 
   async function loadAdminReviewQueue() {
-    if (!isAdmin) return;
     const { data, error } = await supabase.from('requirements').select('*').eq('is_approved', false);
     const tbody = document.getElementById('adminApprovalTableBody');
     tbody.innerHTML = '';
@@ -735,7 +704,7 @@ Scenario: Validating ${r.req_id}
     document.getElementById('auditTableBody').innerHTML = `
       <tr>
         <td style="font-size: 12px; color: var(--text-muted);">${new Date().toLocaleString()}</td>
-        <td><strong>${currentUser ? currentUser.email : 'System'}</strong></td>
+        <td><strong>vaibz8385@gmail.com</strong></td>
         <td><span class="badge badge-med">CLOUD_SYNC</span></td>
         <td style="font-family: monospace; font-size: 12px;">Connected to Supabase PostgreSQL secure cluster.</td>
       </tr>
@@ -776,7 +745,7 @@ Scenario: Validating ${r.req_id}
     }, 500);
   }
 
-  // Initialize Session Check on Load
+  // Initialize Session Immediately
   checkUserSession();
   switchTab('tour');
 </script>
