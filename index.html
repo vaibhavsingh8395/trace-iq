@@ -479,7 +479,7 @@
     setTimeout(() => { toast.style.display = 'none'; }, 3000);
   }
 
-  // AUTHENTICATION & SESSION HANDLING
+  // AUTHENTICATION & SESSION HANDLING VIA SUPABASE
   async function checkUserSession() {
     const { data: { session }, error } = await supabase.auth.getSession();
     if (session && session.user) {
