@@ -82,7 +82,7 @@
     .toggle-password { position: absolute; right: 14px; background: transparent; border: none; color: var(--accent); font-size: 12px; font-weight: 600; cursor: pointer; box-shadow: none; padding: 4px 8px; z-index: 10; }
     .toggle-password:hover { transform: none; opacity: 0.8; }
 
-    /* ONBOARDING TOUR GRID */
+    /* ONBOARDING TOUR GRID WITH HOVER DEEP-DIVE */
     .tour-grid { 
       display: grid; 
       grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); 
@@ -100,10 +100,36 @@
       flex-direction: column; 
       gap: 12px; 
       height: 100%; 
+      position: relative;
+      overflow: hidden;
+      transition: all 0.3s ease;
+    }
+    .tour-card:hover {
+      border-color: var(--accent);
+      background: rgba(10, 132, 255, 0.03);
+      transform: translateY(-2px);
+      box-shadow: 0 12px 30px rgba(10, 132, 255, 0.15);
     }
     .tour-header { display: flex; align-items: center; gap: 12px; }
     .tour-header h3 { margin: 0; font-size: 15px; font-weight: 600; }
     .tour-number { background: var(--accent); color: #fff; width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 13px; flex-shrink: 0; }
+    
+    .tour-details {
+      max-height: 0;
+      opacity: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease, opacity 0.3s ease, margin-top 0.3s ease;
+      font-size: 12px;
+      color: var(--text-muted);
+      border-top: 1px dashed rgba(255,255,255,0.1);
+      padding-top: 0;
+    }
+    .tour-card:hover .tour-details {
+      max-height: 250px;
+      opacity: 1;
+      margin-top: 8px;
+      padding-top: 10px;
+    }
 
     /* MODAL OVERLAY */
     .modal-overlay {
@@ -246,40 +272,76 @@
     <button class="tab-btn" id="nav-audit">🔍 Audit Log</button>
   </div>
 
-  <!-- TAB -1: GUIDED TOUR / ONBOARDING -->
+  <!-- TAB -1: GUIDED TOUR / ONBOARDING WITH HOVER DEEP-DIVE -->
   <div id="view-tour" class="card">
     <h2>Welcome to Trace-IQ Enterprise 👋</h2>
-    <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 20px;">Coming from <strong>Jira, Confluence, or Scrum</strong>? Think of Trace-IQ as your intelligent requirements bridge that connects Confluence PRDs and Jira epics directly to downstream code components. Here is a complete breakdown of all core features:</p>
+    <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 20px;">Coming from <strong>Jira, Confluence, or Scrum</strong>? Think of Trace-IQ as your intelligent requirements bridge that connects Confluence PRDs and Jira epics directly to downstream code components. <em>Hover over any card below for detailed use cases and technical terminologies.</em></p>
 
     <div class="tour-grid">
       <div class="tour-card">
         <div class="tour-header"><div class="tour-number">1</div><h3>🤖 AI Decomposition</h3></div>
         <p style="color: var(--text-muted); font-size: 13px; margin: 0;">Paste raw Confluence meeting notes or Scrum refinement transcripts to instantly extract atomic User Stories and Epics.</p>
+        <div class="tour-details">
+          <strong>Use Case:</strong> Eliminates manual backlog grooming by parsing unstructured stakeholder discussions into developer-ready epics.<br><br>
+          <strong>Terminology:</strong><br>
+          • <em>Atomic Requirement:</em> A self-contained, independent unit of work.<br>
+          • <em>Semantic Parser:</em> AI model extracting contextual intent from natural language.
+        </div>
       </div>
 
       <div class="tour-card">
         <div class="tour-header"><div class="tour-number">2</div><h3>💬 RTM Copilot</h3></div>
         <p style="color: var(--text-muted); font-size: 13px; margin: 0;">Chat with your sprint backlog in plain English to query dependencies, technical components, and high-risk items.</p>
+        <div class="tour-details">
+          <strong>Use Case:</strong> Instant risk querying during sprint planning without digging through complex documentation trees.<br><br>
+          <strong>Terminology:</strong><br>
+          • <em>RTM (Requirements Traceability Matrix):</em> Cross-reference table linking requirements to code.<br>
+          • <em>Backlog Context:</em> Live metadata retrieved directly from database records.
+        </div>
       </div>
 
       <div class="tour-card">
         <div class="tour-header"><div class="tour-number">3</div><h3>📋 Traceability Matrix</h3></div>
         <p style="color: var(--text-muted); font-size: 13px; margin: 0;">Your centralized RTM dashboard linking Business Goals down to Jira user stories, API endpoints, and database schemas.</p>
+        <div class="tour-details">
+          <strong>Use Case:</strong> End-to-end audit compliance tracking to ensure every business feature has a corresponding codebase binding.<br><br>
+          <strong>Terminology:</strong><br>
+          • <em>Forward/Backward Traceability:</em> Mapping goals to code and code back to business needs.<br>
+          • <em>Schema Binding:</em> Database foreign keys tying items to specific APIs.
+        </div>
       </div>
 
       <div class="tour-card">
         <div class="tour-header"><div class="tour-number">4</div><h3>⚡ Impact Analyzer</h3></div>
         <p style="color: var(--text-muted); font-size: 13px; margin: 0;">Simulate scope changes during sprint planning and scan automated GitHub PR webhooks to detect code drift.</p>
+        <div class="tour-details">
+          <strong>Use Case:</strong> Preventing unintended regression bugs when product managers alter feature scopes late in a release cycle.<br><br>
+          <strong>Terminology:</strong><br>
+          • <em>Code Drift:</em> Discrepancy between documented requirements and actual deployed code.<br>
+          • <em>Scope Simulation:</em> Virtual modeling of requirement dependency breaks.
+        </div>
       </div>
 
       <div class="tour-card">
         <div class="tour-header"><div class="tour-number">5</div><h3>🧪 BDD Generator</h3></div>
         <p style="color: var(--text-muted); font-size: 13px; margin: 0;">Automatically translate user stories into Gherkin BDD scenarios (`Given / When / Then`) and Jest test boilerplate for QA.</p>
+        <div class="tour-details">
+          <strong>Use Case:</strong> Bridging the gap between QA automation engineers and product owners with standardized behavior specs.<br><br>
+          <strong>Terminology:</strong><br>
+          • <em>Gherkin Syntax:</em> Human-readable Domain Specific Language (DSL) for acceptance testing.<br>
+          • <em>Boilerplate Code:</em> Standardized test templates ready for execution.
+        </div>
       </div>
 
       <div class="tour-card">
         <div class="tour-header"><div class="tour-number">6</div><h3>🛡️ Compliance Audit</h3></div>
         <p style="color: var(--text-muted); font-size: 13px; margin: 0;">Cross-reference your sprint requirements against SOC2 Type II, GDPR, and HIPAA governance frameworks instantly.</p>
+        <div class="tour-details">
+          <strong>Use Case:</strong> Automated regulatory readiness checking before submitting builds to enterprise security auditors.<br><br>
+          <strong>Terminology:</strong><br>
+          • <em>Governance Framework:</em> Standardized rules ensuring data privacy and security.<br>
+          • <em>Audit Trail:</em> Immutable telemetry logging every scope modification.
+        </div>
       </div>
     </div>
 
@@ -547,7 +609,6 @@
       if (authStatusText) authStatusText.textContent = 'Signed Out';
     }
 
-    // Check if Gemini API key is configured
     const savedApiKey = localStorage.getItem('trace_iq_gemini_key');
     if (!savedApiKey) {
       const apiKeyModal = document.getElementById('apiKeyModal');
@@ -617,7 +678,6 @@
     }
   }
 
-  // SUPABASE WEBSOCKET REALTIME SYNC
   function setupRealtimeSync() {
     const wsUrl = SUPABASE_URL.replace('https://', 'wss://') + '/realtime/v1/websocket?apikey=' + SUPABASE_ANON_KEY + '&vsn=1.0.0';
     const socket = new WebSocket(wsUrl);
@@ -641,7 +701,6 @@
     };
   }
 
-  // LIVE GEMINI AI DECOMPOSITION
   async function handleAIParseTranscript() {
     const transcriptInput = document.getElementById('aiTranscriptInput');
     const text = transcriptInput ? transcriptInput.value.trim() : '';
@@ -1024,10 +1083,8 @@ Scenario: Validating ${r.req_id}
 
   // EVENT BINDINGS ON LOAD
   document.addEventListener('DOMContentLoaded', () => {
-    // Login form submission
     document.getElementById('loginForm').addEventListener('submit', handleDirectLogin);
 
-    // AI API Key configuration modal
     document.getElementById('configApiKeyBtn').addEventListener('click', () => {
       document.getElementById('apiKeyModal').style.display = 'flex';
     });
@@ -1043,19 +1100,16 @@ Scenario: Validating ${r.req_id}
       showToast('Gemini API key saved securely!');
     });
 
-    // Navigation tabs
     const tabs = ['tour', 'ai', 'chat', 'matrix', 'impact', 'test', 'compliance', 'analytics', 'admin', 'audit'];
     tabs.forEach(t => {
       const btn = document.getElementById('nav-' + t);
       if (btn) btn.addEventListener('click', () => switchTab(t));
     });
 
-    // Header buttons
     document.getElementById('helpToggleBtn').addEventListener('click', toggleHelpTab);
     document.getElementById('logoutBtn').addEventListener('click', handleLogout);
     document.getElementById('startExploreBtn').addEventListener('click', () => switchTab('ai'));
 
-    // AI & Chat
     document.getElementById('runAiParseBtn').addEventListener('click', handleAIParseTranscript);
 
     document.getElementById('chatSendBtn').addEventListener('click', () => {
@@ -1075,22 +1129,18 @@ Scenario: Validating ${r.req_id}
       if (e.key === 'Enter') document.getElementById('chatSendBtn').click();
     });
 
-    // RTM Matrix & Modals
     document.getElementById('openNewReqModalBtn').addEventListener('click', openNewReqModal);
     document.getElementById('closeReqModalBtn').addEventListener('click', closeNewReqModal);
     document.getElementById('newReqForm').addEventListener('submit', handleCreateReq);
     document.getElementById('reqSearchInput').addEventListener('input', renderRTMTable);
 
-    // Export buttons
     document.getElementById('exportCsvBtn').addEventListener('click', () => exportData('csv'));
     document.getElementById('exportJsonBtn').addEventListener('click', () => exportData('json'));
 
-    // Impact / Test / Compliance changes
     document.getElementById('impactSelectReq').addEventListener('change', runImpactSimulation);
     document.getElementById('testSelectReq').addEventListener('change', generateBDDTests);
     document.getElementById('complianceFramework').addEventListener('change', runComplianceAudit);
 
-    // Initialize session
     checkUserSession();
     switchTab('tour');
   });
