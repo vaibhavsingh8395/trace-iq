@@ -82,7 +82,7 @@
     /* PASSWORD WRAPPER */
     .password-wrapper { position: relative; display: flex; align-items: center; }
     .password-wrapper input { padding-right: 70px; }
-    .toggle-password { position: absolute; right: 14px; background: transparent; border: none; color: var(--accent); font-size: 12px; font-weight: 600; cursor: pointer; box-shadow: none; padding: 4px 8px; }
+    .toggle-password { position: absolute; right: 14px; background: transparent; border: none; color: var(--accent); font-size: 12px; font-weight: 600; cursor: pointer; box-shadow: none; padding: 4px 8px; z-index: 10; }
     .toggle-password:hover { transform: none; opacity: 0.8; }
 
     /* ONBOARDING TOUR GRID */
@@ -181,20 +181,20 @@
     <h3>Sign In to Trace-IQ</h3>
     <p style="color: var(--text-muted); font-size: 13px; margin-bottom: 24px;">Authenticate with your Supabase secure account.</p>
     
-    <div style="text-align: left;">
+    <form id="loginForm" onsubmit="handleDirectLogin(event)" style="text-align: left;">
       <div class="form-group">
         <label>Email Address</label>
-        <input type="email" id="loginEmail" placeholder="vaibz8385@gmail.com" value="vaibz8385@gmail.com">
+        <input type="email" id="loginEmail" placeholder="vaibz8385@gmail.com" value="vaibz8385@gmail.com" required>
       </div>
       <div class="form-group">
         <label>Password</label>
         <div class="password-wrapper">
-          <input type="password" id="loginPassword" placeholder="••••••••" value="admin@123">
+          <input type="password" id="loginPassword" placeholder="••••••••" value="admin@123" required>
           <button type="button" class="toggle-password" id="togglePassBtn" onclick="togglePasswordVisibility()">Show</button>
         </div>
       </div>
-      <button onclick="handleDirectLogin()" style="width: 100%;">Sign In Instantly</button>
-    </div>
+      <button type="submit" style="width: 100%; margin-top: 10px;">Sign In Instantly</button>
+    </form>
   </div>
 </div>
 
@@ -522,7 +522,8 @@
     }
   }
 
-  async function handleDirectLogin() {
+  async function handleDirectLogin(e) {
+    if (e) e.preventDefault();
     const email = document.getElementById('loginEmail').value.trim();
     const password = document.getElementById('loginPassword').value.trim();
 
