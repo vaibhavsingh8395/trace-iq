@@ -175,7 +175,7 @@
     <h3>Sign In to Trace-IQ</h3>
     <p style="color: var(--text-muted); font-size: 13px; margin-bottom: 24px;">Authenticate with your Supabase secure account.</p>
     
-    <form onsubmit="handleCustomLogin(event)">
+    <form id="loginForm" onsubmit="handleCustomLogin(event)">
       <div class="form-group" style="text-align: left;">
         <label>Email Address</label>
         <input type="email" id="loginEmail" placeholder="vaibz8385@gmail.com" required>
@@ -507,22 +507,28 @@
     const email = document.getElementById('loginEmail').value.trim();
     const password = document.getElementById('loginPassword').value.trim();
 
-    // Query profiles table
     const { data, error } = await supabase
       .from('profiles')
       .select('*')
       .eq('email', email)
       .eq('password', password)
-      .single();
+      .maybeSingle();
 
-    if (error || !data) {
-      showToast('Login Failed: Invalid email or password.');
-    } else {
-      localStorage.setItem('trace_iq_user', data.email);
-      localStorage.setItem('trace_iq_admin', data.is_admin ? 'true' : 'false');
-      showToast('Signed in successfully!');
-      checkUserSession();
+    if (error) {
+      console.error('Login DB Error:', error);
+      showToast('Login Error: ' + error.message);
+      return;
     }
+
+    if (!data) {
+      showToast('Invalid email or password.');
+      return;
+    }
+
+    localStorage.setItem('trace_iq_user', data.email);
+    localStorage.setItem('trace_iq_admin', data.is_admin ? 'true' : 'false');
+    showToast('Signed in successfully!');
+    checkUserSession();
   }
 
   function handleLogout() {
