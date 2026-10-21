@@ -527,27 +527,33 @@
     const email = document.getElementById('loginEmail').value.trim();
     const password = document.getElementById('loginPassword').value.trim();
 
-    const { data, error } = await supabase
-      .from('profiles')
-      .select('*')
-      .eq('email', email)
-      .eq('password', password)
-      .maybeSingle();
+    try {
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('email', email)
+        .eq('password', password)
+        .maybeSingle();
 
-    if (error) {
-      showToast('Database error: ' + error.message);
-      return;
+      if (error) {
+        console.error('Supabase Login Error:', error);
+        showToast('Login Error: ' + error.message);
+        return;
+      }
+
+      if (!data) {
+        showToast('Invalid email or password.');
+        return;
+      }
+
+      localStorage.setItem('trace_iq_user', data.email);
+      localStorage.setItem('trace_iq_admin', data.is_admin ? 'true' : 'false');
+      showToast('Signed in successfully!');
+      checkUserSession();
+    } catch (err) {
+      console.error('Unexpected Login Exception:', err);
+      showToast('Connection error. Check console.');
     }
-
-    if (!data) {
-      showToast('Invalid email or password.');
-      return;
-    }
-
-    localStorage.setItem('trace_iq_user', data.email);
-    localStorage.setItem('trace_iq_admin', data.is_admin ? 'true' : 'false');
-    showToast('Signed in successfully!');
-    checkUserSession();
   }
 
   function handleLogout() {
