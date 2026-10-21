@@ -181,7 +181,7 @@
     <h3>Sign In to Trace-IQ</h3>
     <p style="color: var(--text-muted); font-size: 13px; margin-bottom: 24px;">Authenticate with your Supabase secure account.</p>
     
-    <form id="loginForm" onsubmit="handleDirectLogin(event)" style="text-align: left;">
+    <form id="loginForm" style="text-align: left;">
       <div class="form-group">
         <label>Email Address</label>
         <input type="email" id="loginEmail" placeholder="vaibz8385@gmail.com" value="vaibz8385@gmail.com" required>
@@ -190,10 +190,10 @@
         <label>Password</label>
         <div class="password-wrapper">
           <input type="password" id="loginPassword" placeholder="••••••••" value="admin@123" required>
-          <button type="button" class="toggle-password" id="togglePassBtn" onclick="togglePasswordVisibility()">Show</button>
+          <button type="button" class="toggle-password" id="togglePassBtn">Show</button>
         </div>
       </div>
-      <button type="submit" style="width: 100%; margin-top: 10px;">Sign In Instantly</button>
+      <button type="submit" id="loginSubmitBtn" style="width: 100%; margin-top: 10px;">Sign In Instantly</button>
     </form>
   </div>
 </div>
@@ -212,23 +212,23 @@
       <div style="background: var(--bg-card); padding: 8px 16px; border-radius: 20px; border: 1px solid var(--border-color);">
         <span style="font-size: 12px; color: var(--success); font-weight: 500; display: flex; align-items: center; gap: 6px;"><span style="width: 7px; height: 7px; background: var(--success); border-radius: 50%; display: inline-block;"></span> <span id="authStatusText">Checking Session...</span></span>
       </div>
-      <button class="btn-small btn-secondary" onclick="toggleHelpTab()" id="helpToggleBtn">Hide Onboarding Tour</button>
-      <button class="btn-small btn-secondary" onclick="handleLogout()">Sign Out</button>
+      <button class="btn-small btn-secondary" id="helpToggleBtn">Hide Onboarding Tour</button>
+      <button class="btn-small btn-secondary" id="logoutBtn">Sign Out</button>
     </div>
   </header>
 
   <!-- SEGMENTED NAVIGATION -->
   <div class="nav-tabs" id="navTabsContainer">
-    <button class="tab-btn active" id="btn-tour" onclick="switchTab('tour')">🧭 Guided Tour</button>
-    <button class="tab-btn" id="btn-ai" onclick="switchTab('ai')">🤖 AI Decomposition</button>
-    <button class="tab-btn" id="btn-chat" onclick="switchTab('chat')">💬 RTM Copilot</button>
-    <button class="tab-btn" id="btn-matrix" onclick="switchTab('matrix')">📋 Traceability Matrix</button>
-    <button class="tab-btn" id="btn-impact" onclick="switchTab('impact')">⚡ Impact Analyzer</button>
-    <button class="tab-btn" id="btn-test" onclick="switchTab('test')">🧪 BDD Generator</button>
-    <button class="tab-btn" id="btn-compliance" onclick="switchTab('compliance')">🛡️ Compliance</button>
-    <button class="tab-btn" id="btn-analytics" onclick="switchTab('analytics')">📊 Analytics</button>
-    <button class="tab-btn" id="btn-admin" onclick="switchTab('admin')" style="display: none; border-color: var(--accent); color: var(--accent);">🛡️ Admin Approval</button>
-    <button class="tab-btn" id="btn-audit" onclick="switchTab('audit')">🔍 Audit Log</button>
+    <button class="tab-btn active" id="nav-tour">🧭 Guided Tour</button>
+    <button class="tab-btn" id="nav-ai">🤖 AI Decomposition</button>
+    <button class="tab-btn" id="nav-chat">💬 RTM Copilot</button>
+    <button class="tab-btn" id="nav-matrix">📋 Traceability Matrix</button>
+    <button class="tab-btn" id="nav-impact">⚡ Impact Analyzer</button>
+    <button class="tab-btn" id="nav-test">🧪 BDD Generator</button>
+    <button class="tab-btn" id="nav-compliance">🛡️ Compliance</button>
+    <button class="tab-btn" id="nav-analytics">📊 Analytics</button>
+    <button class="tab-btn" id="nav-admin" style="display: none; border-color: var(--accent); color: var(--accent);">🛡️ Admin Approval</button>
+    <button class="tab-btn" id="nav-audit">🔍 Audit Log</button>
   </div>
 
   <!-- TAB -1: GUIDED TOUR / ONBOARDING -->
@@ -268,7 +268,7 @@
       </div>
     </div>
 
-    <button style="margin-top: 20px;" onclick="switchTab('ai')">Start Exploring Trace-IQ →</button>
+    <button style="margin-top: 20px;" id="startExploreBtn">Start Exploring Trace-IQ →</button>
   </div>
 
   <!-- TAB 0: AI DECOMPOSITION -->
@@ -281,7 +281,7 @@
       <textarea id="aiTranscriptInput" rows="5" placeholder="e.g., Scrum team discussed adding a secure OAuth2 authentication endpoint with PostgreSQL session caching..."></textarea>
     </div>
 
-    <button onclick="handleAIParseTranscript()">Run AI Extraction</button>
+    <button id="runAiParseBtn">Run AI Extraction</button>
   </div>
 
   <!-- TAB 1: RTM COPILOT -->
@@ -294,8 +294,8 @@
     </div>
 
     <div style="display: flex; gap: 12px;">
-      <input type="text" id="chatInput" placeholder="Ask Copilot a question..." onkeypress="if(event.key === 'Enter') handleChatSend()">
-      <button onclick="handleChatSend()" style="width: auto; padding: 0 24px;">Send</button>
+      <input type="text" id="chatInput" placeholder="Ask Copilot a question...">
+      <button id="chatSendBtn" style="width: auto; padding: 0 24px;">Send</button>
     </div>
   </div>
 
@@ -306,11 +306,11 @@
         <h2>Requirements Traceability Matrix</h2>
         <p style="color: var(--text-muted); font-size: 14px; margin: 4px 0 0 0;">Relational mapping from Business Epics down to Technical Schemas.</p>
       </div>
-      <button onclick="openNewReqModal()">+ New Requirement</button>
+      <button id="openNewReqModalBtn">+ New Requirement</button>
     </div>
 
     <div class="search-filter-bar" style="margin-top: 24px;">
-      <input type="text" id="reqSearchInput" placeholder="🔍 Search requirements..." oninput="renderRTMTable()">
+      <input type="text" id="reqSearchInput" placeholder="🔍 Search requirements...">
     </div>
 
     <table>
@@ -336,7 +336,7 @@
 
     <div class="form-group" style="max-width: 600px;">
       <label>Select Requirement</label>
-      <select id="impactSelectReq" onchange="runImpactSimulation()"></select>
+      <select id="impactSelectReq"></select>
     </div>
 
     <div id="impactResultContainer" style="margin-top: 24px;"></div>
@@ -349,7 +349,7 @@
 
     <div class="form-group" style="max-width: 600px;">
       <label>Select Requirement</label>
-      <select id="testSelectReq" onchange="generateBDDTests()"></select>
+      <select id="testSelectReq"></select>
     </div>
 
     <div id="testResultContainer" style="margin-top: 24px;"></div>
@@ -362,7 +362,7 @@
 
     <div class="form-group" style="max-width: 600px;">
       <label>Select Framework</label>
-      <select id="complianceFramework" onchange="runComplianceAudit()">
+      <select id="complianceFramework">
         <option value="SOC2">SOC2 Type II (Security & Confidentiality)</option>
         <option value="GDPR">GDPR (Data Privacy & Article 17)</option>
         <option value="HIPAA">HIPAA (Healthcare Data Safeguards)</option>
@@ -393,8 +393,8 @@
     </div>
 
     <div style="display: flex; gap: 16px; margin-top: 32px; flex-wrap: wrap;">
-      <button onclick="exportData('csv')" style="max-width: 260px;">Export RTM (CSV)</button>
-      <button onclick="exportData('json')" class="btn-secondary" style="max-width: 260px;">Export Package (JSON)</button>
+      <button id="exportCsvBtn" style="max-width: 260px;">Export RTM (CSV)</button>
+      <button id="exportJsonBtn" class="btn-secondary" style="max-width: 260px;">Export Package (JSON)</button>
     </div>
   </div>
 
@@ -441,7 +441,7 @@
 <div id="reqModal" class="modal-overlay">
   <div class="card" style="width: 100%; max-width: 500px; margin: 0; background: var(--bg-surface);">
     <h3>New Business Requirement</h3>
-    <form onsubmit="handleCreateReq(event)">
+    <form id="newReqForm">
       <div class="form-group">
         <label>Title & Goal</label>
         <input type="text" id="reqTitleInput" placeholder="Stripe Payment Gateway Integration" required>
@@ -464,7 +464,7 @@
       </div>
       <div style="display: flex; gap: 14px; margin-top: 24px;">
         <button type="submit">Save to Cloud</button>
-        <button type="button" class="btn-secondary" onclick="closeNewReqModal()">Cancel</button>
+        <button type="button" class="btn-secondary" id="closeReqModalBtn">Cancel</button>
       </div>
     </form>
   </div>
@@ -488,18 +488,6 @@
     setTimeout(() => { toast.style.display = 'none'; }, 3000);
   }
 
-  function togglePasswordVisibility() {
-    const passInput = document.getElementById('loginPassword');
-    const toggleBtn = document.getElementById('togglePassBtn');
-    if (passInput.type === 'password') {
-      passInput.type = 'text';
-      toggleBtn.textContent = 'Hide';
-    } else {
-      passInput.type = 'password';
-      toggleBtn.textContent = 'Show';
-    }
-  }
-
   function checkUserSession() {
     const savedEmail = localStorage.getItem('trace_iq_user');
     const savedAdmin = localStorage.getItem('trace_iq_admin') === 'true';
@@ -513,7 +501,7 @@
       document.getElementById('userHeaderSub').textContent = isAdmin ? 'Master Admin Session Active' : 'User Sandbox Active';
 
       if (isAdmin) {
-        document.getElementById('btn-admin').style.display = 'flex';
+        document.getElementById('nav-admin').style.display = 'flex';
       }
       fetchRequirements();
     } else {
@@ -623,9 +611,13 @@
         <td>${r.title}</td>
         <td style="font-size: 12px; color: var(--text-muted); font-family: monospace;">${r.user_email}</td>
         <td><span class="badge badge-med">Pending Review</span></td>
-        <td><button class="btn-small" onclick="approveRequirement('${r.id}')">Approve Scope</button></td>
+        <td><button class="btn-small approve-req-btn" data-id="${r.id}">Approve Scope</button></td>
       `;
       tbody.appendChild(row);
+    });
+
+    document.querySelectorAll('.approve-req-btn').forEach(btn => {
+      btn.addEventListener('click', () => approveRequirement(btn.getAttribute('data-id')));
     });
   }
 
@@ -640,7 +632,7 @@
 
   function toggleHelpTab() {
     tourVisible = !tourVisible;
-    const tourBtn = document.getElementById('btn-tour');
+    const tourBtn = document.getElementById('nav-tour');
     const toggleBtn = document.getElementById('helpToggleBtn');
     if (tourVisible) {
       tourBtn.style.display = 'flex';
@@ -656,7 +648,7 @@
     const tabs = ['tour', 'ai', 'chat', 'matrix', 'impact', 'test', 'compliance', 'analytics', 'admin', 'audit'];
     tabs.forEach(t => {
       const el = document.getElementById('view-' + t);
-      const btn = document.getElementById('btn-' + t);
+      const btn = document.getElementById('nav-' + t);
       if (el) el.style.display = (t === tabName) ? 'block' : 'none';
       if (btn) btn.classList.toggle('active', t === tabName);
     });
@@ -687,9 +679,13 @@
         <td><span class="badge badge-low" style="font-family: monospace;">${r.component}</span></td>
         <td><span class="badge ${badgeClass}">${r.risk}</span></td>
         <td><span class="badge ${r.is_approved ? 'badge-verified' : 'badge-med'}">${r.is_approved ? '● Verified' : '○ Pending'}</span></td>
-        <td><button class="btn-small btn-secondary" onclick="deleteReq('${r.id}')">Remove</button></td>
+        <td><button class="btn-small btn-secondary delete-req-btn" data-id="${r.id}">Remove</button></td>
       `;
       tbody.appendChild(row);
+    });
+
+    document.querySelectorAll('.delete-req-btn').forEach(btn => {
+      btn.addEventListener('click', () => deleteReq(btn.getAttribute('data-id')));
     });
   }
 
@@ -807,30 +803,81 @@ Scenario: Validating ${r.req_id}
     showToast(`Exported report as ${format.toUpperCase()}`);
   }
 
-  function handleAIParseTranscript() {
-    const text = document.getElementById('aiTranscriptInput').value.trim();
-    if (!text) { alert('Please enter transcript text.'); return; }
-    showToast('AI parser extracted atomic requirement!');
-    document.getElementById('aiTranscriptInput').value = '';
-    switchTab('matrix');
-  }
+  // EVENT BINDINGS (DOMContentLoaded)
+  document.addEventListener('DOMContentLoaded', () => {
+    // Login form submission
+    document.getElementById('loginForm').addEventListener('submit', handleDirectLogin);
 
-  function handleChatSend() {
-    const input = document.getElementById('chatInput');
-    const q = input.value.trim();
-    if (!q) return;
-    const chatBox = document.getElementById('chatContainer');
-    chatBox.innerHTML += `<div class="chat-msg user">${q}</div>`;
-    input.value = '';
-    setTimeout(() => {
-      chatBox.innerHTML += `<div class="chat-msg ai">All requirements in your isolated sandbox are successfully synced to your cloud database.</div>`;
-      chatBox.scrollTop = chatBox.scrollHeight;
-    }, 500);
-  }
+    // Password visibility toggle
+    document.getElementById('togglePassBtn').addEventListener('click', () => {
+      const passInput = document.getElementById('loginPassword');
+      const toggleBtn = document.getElementById('togglePassBtn');
+      if (passInput.type === 'password') {
+        passInput.type = 'text';
+        toggleBtn.textContent = 'Hide';
+      } else {
+        passInput.type = 'password';
+        toggleBtn.textContent = 'Show';
+      }
+    });
 
-  // Initialize Session Verification on Load
-  checkUserSession();
-  switchTab('tour');
+    // Navigation tabs
+    const tabs = ['tour', 'ai', 'chat', 'matrix', 'impact', 'test', 'compliance', 'analytics', 'admin', 'audit'];
+    tabs.forEach(t => {
+      const btn = document.getElementById('nav-' + t);
+      if (btn) btn.addEventListener('click', () => switchTab(t));
+    });
+
+    // Header buttons
+    document.getElementById('helpToggleBtn').addEventListener('click', toggleHelpTab);
+    document.getElementById('logoutBtn').addEventListener('click', handleLogout);
+    document.getElementById('startExploreBtn').addEventListener('click', () => switchTab('ai'));
+
+    // AI & Chat
+    document.getElementById('runAiParseBtn').addEventListener('click', () => {
+      const text = document.getElementById('aiTranscriptInput').value.trim();
+      if (!text) { alert('Please enter transcript text.'); return; }
+      showToast('AI parser extracted atomic requirement!');
+      document.getElementById('aiTranscriptInput').value = '';
+      switchTab('matrix');
+    });
+
+    document.getElementById('chatSendBtn').addEventListener('click', () => {
+      const input = document.getElementById('chatInput');
+      const q = input.value.trim();
+      if (!q) return;
+      const chatBox = document.getElementById('chatContainer');
+      chatBox.innerHTML += `<div class="chat-msg user">${q}</div>`;
+      input.value = '';
+      setTimeout(() => {
+        chatBox.innerHTML += `<div class="chat-msg ai">All requirements in your isolated sandbox are successfully synced to your cloud database.</div>`;
+        chatBox.scrollTop = chatBox.scrollHeight;
+      }, 500);
+    });
+
+    document.getElementById('chatInput').addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') document.getElementById('chatSendBtn').click();
+    });
+
+    // RTM Matrix & Modals
+    document.getElementById('openNewReqModalBtn').addEventListener('click', openNewReqModal);
+    document.getElementById('closeReqModalBtn').addEventListener('click', closeNewReqModal);
+    document.getElementById('newReqForm').addEventListener('submit', handleCreateReq);
+    document.getElementById('reqSearchInput').addEventListener('input', renderRTMTable);
+
+    // Export buttons
+    document.getElementById('exportCsvBtn').addEventListener('click', () => exportData('csv'));
+    document.getElementById('exportJsonBtn').addEventListener('click', () => exportData('json'));
+
+    // Impact / Test / Compliance changes
+    document.getElementById('impactSelectReq').addEventListener('change', runImpactSimulation);
+    document.getElementById('testSelectReq').addEventListener('change', generateBDDTests);
+    document.getElementById('complianceFramework').addEventListener('change', runComplianceAudit);
+
+    // Initialize
+    checkUserSession();
+    switchTab('tour');
+  });
 </script>
 
 </body>
