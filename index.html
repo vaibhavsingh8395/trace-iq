@@ -701,6 +701,7 @@
     };
   }
 
+  // LIVE GEMINI AI DECOMPOSITION (Supports AQ OAuth tokens and AIza keys)
   async function handleAIParseTranscript() {
     const transcriptInput = document.getElementById('aiTranscriptInput');
     const text = transcriptInput ? transcriptInput.value.trim() : '';
@@ -718,7 +719,14 @@
 
     showToast('🤖 Gemini AI is decomposing transcript...');
 
-    const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
+    let GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent`;
+    let headers = { 'Content-Type': 'application/json' };
+
+    if (apiKey.startsWith('AQ.')) {
+      headers['Authorization'] = `Bearer ${apiKey}`;
+    } else {
+      GEMINI_URL += `?key=${apiKey}`;
+    }
 
     const prompt = `Analyze this Scrum/Confluence requirement transcript and extract 1 atomic user story, a clean technical component route, and a risk level (High, Medium, or Low). 
     Return ONLY a strict JSON object with these exact keys: "title", "user_story", "component", "risk". No markdown ticks, just raw JSON.
@@ -727,7 +735,7 @@
     try {
       const response = await fetch(GEMINI_URL, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: headers,
         body: JSON.stringify({
           contents: [{ parts: [{ text: prompt }] }]
         })
