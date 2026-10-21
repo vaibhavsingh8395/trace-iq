@@ -168,6 +168,27 @@
 
 <div id="toast">Notification Message</div>
 
+<!-- SUPABASE AUTHENTICATION LOGIN MODAL -->
+<div id="loginModal" class="modal-overlay" style="display: flex;">
+  <div class="card" style="width: 100%; max-width: 420px; margin: 0; background: var(--bg-surface); text-align: center;">
+    <div class="logo-badge" style="margin: 0 auto 16px auto;">💠</div>
+    <h3>Sign In to Trace-IQ</h3>
+    <p style="color: var(--text-muted); font-size: 13px; margin-bottom: 24px;">Authenticate with your Supabase secure account.</p>
+    
+    <form onsubmit="handlePasswordLogin(event)">
+      <div class="form-group" style="text-align: left;">
+        <label>Email Address</label>
+        <input type="email" id="loginEmail" placeholder="vaibz8385@gmail.com" required>
+      </div>
+      <div class="form-group" style="text-align: left;">
+        <label>Password</label>
+        <input type="password" id="loginPassword" placeholder="••••••••" required>
+      </div>
+      <button type="submit" style="width: 100%;">Sign In Instantly</button>
+    </form>
+  </div>
+</div>
+
 <div class="app-container">
   
   <header>
@@ -175,12 +196,12 @@
       <div class="logo-badge">💠</div>
       <div>
         <h1 style="font-size: 1.25rem; margin: 0; font-weight: 600; letter-spacing: -0.01em;">Trace-IQ Enterprise</h1>
-        <p style="font-size: 0.8rem; margin: 2px 0 0 0; color: var(--text-muted);" id="userHeaderSub">Master Admin Session Active</p>
+        <p style="font-size: 0.8rem; margin: 2px 0 0 0; color: var(--text-muted);" id="userHeaderSub">Supabase Cloud Connected</p>
       </div>
     </div>
     <div style="display: flex; gap: 12px; align-items: center;">
       <div style="background: var(--bg-card); padding: 8px 16px; border-radius: 20px; border: 1px solid var(--border-color);">
-        <span style="font-size: 12px; color: var(--success); font-weight: 500; display: flex; align-items: center; gap: 6px;"><span style="width: 7px; height: 7px; background: var(--success); border-radius: 50%; display: inline-block;"></span> <span id="authStatusText">vaibz8385@gmail.com (Admin)</span></span>
+        <span style="font-size: 12px; color: var(--success); font-weight: 500; display: flex; align-items: center; gap: 6px;"><span style="width: 7px; height: 7px; background: var(--success); border-radius: 50%; display: inline-block;"></span> <span id="authStatusText">Checking Session...</span></span>
       </div>
       <button class="btn-small btn-secondary" onclick="toggleHelpTab()" id="helpToggleBtn">Hide Onboarding Tour</button>
       <button class="btn-small btn-secondary" onclick="handleLogout()">Sign Out</button>
@@ -197,7 +218,7 @@
     <button class="tab-btn" id="btn-test" onclick="switchTab('test')">🧪 BDD Generator</button>
     <button class="tab-btn" id="btn-compliance" onclick="switchTab('compliance')">🛡️ Compliance</button>
     <button class="tab-btn" id="btn-analytics" onclick="switchTab('analytics')">📊 Analytics</button>
-    <button class="tab-btn" id="btn-admin" onclick="switchTab('admin')" style="display: flex; border-color: var(--accent); color: var(--accent);">🛡️ Admin Approval</button>
+    <button class="tab-btn" id="btn-admin" onclick="switchTab('admin')" style="display: none; border-color: var(--accent); color: var(--accent);">🛡️ Admin Approval</button>
     <button class="tab-btn" id="btn-audit" onclick="switchTab('audit')">🔍 Audit Log</button>
   </div>
 
@@ -446,8 +467,8 @@
   const SUPABASE_ANON_KEY = 'sb_publishable_eBdLaYoh4ngV5pkDvL3EMA_F069FJQB';
   const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-  let currentUser = { id: 'admin-master-bypass', email: 'vaibz8385@gmail.com' };
-  let isAdmin = true;
+  let currentUser = null;
+  let isAdmin = false;
   let tourVisible = true;
   let cachedReqs = [];
 
@@ -458,11 +479,48 @@
     setTimeout(() => { toast.style.display = 'none'; }, 3000);
   }
 
-  function handleLogout() {
+  // AUTHENTICATION & SESSION HANDLING
+  async function checkUserSession() {
+    const { data: { session }, error } = await supabase.auth.getSession();
+    if (session && session.user) {
+      currentUser = session.user;
+      isAdmin = currentUser.email === 'vaibz8385@gmail.com';
+      
+      document.getElementById('loginModal').style.display = 'none';
+      document.getElementById('authStatusText').textContent = currentUser.email;
+      document.getElementById('userHeaderSub').textContent = isAdmin ? 'Master Admin Session Active' : 'User Sandbox Active';
+
+      if (isAdmin) {
+        document.getElementById('btn-admin').style.display = 'flex';
+      }
+      fetchRequirements();
+    } else {
+      document.getElementById('loginModal').style.display = 'flex';
+      document.getElementById('authStatusText').textContent = 'Signed Out';
+    }
+  }
+
+  async function handlePasswordLogin(e) {
+    e.preventDefault();
+    const email = document.getElementById('loginEmail').value.trim();
+    const password = document.getElementById('loginPassword').value.trim();
+    
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+    
+    if (error) {
+      showToast('Login Failed: ' + error.message);
+    } else {
+      showToast('Signed in successfully!');
+      checkUserSession();
+    }
+  }
+
+  async function handleLogout() {
+    await supabase.auth.signOut();
     location.reload();
   }
 
-  // DATABASE FETCHING
+  // DATABASE FETCHING WITH RLS
   async function fetchRequirements() {
     let query = supabase.from('requirements').select('*');
     const { data, error } = await query;
@@ -506,6 +564,7 @@
   }
 
   async function loadAdminReviewQueue() {
+    if (!isAdmin) return;
     const { data, error } = await supabase.from('requirements').select('*').eq('is_approved', false);
     const tbody = document.getElementById('adminApprovalTableBody');
     if (!tbody) return;
@@ -538,7 +597,7 @@
     }
   }
 
-  // NAVIGATION & UI SWITCHER
+  // NAVIGATION & TAB SWITCHER
   function toggleHelpTab() {
     tourVisible = !tourVisible;
     const tourBtn = document.getElementById('btn-tour');
@@ -688,7 +747,7 @@ Scenario: Validating ${r.req_id}
     tbody.innerHTML = `
       <tr>
         <td style="font-size: 12px; color: var(--text-muted);">${new Date().toLocaleString()}</td>
-        <td><strong>vaibz8385@gmail.com</strong></td>
+        <td><strong>${currentUser ? currentUser.email : 'System'}</strong></td>
         <td><span class="badge badge-med">CLOUD_SYNC</span></td>
         <td style="font-family: monospace; font-size: 12px;">Connected to Supabase PostgreSQL secure cluster.</td>
       </tr>
@@ -729,8 +788,8 @@ Scenario: Validating ${r.req_id}
     }, 500);
   }
 
-  // Initial Load
-  fetchRequirements();
+  // Initialize Session Verification on Load
+  checkUserSession();
   switchTab('tour');
 </script>
 
