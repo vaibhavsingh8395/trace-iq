@@ -168,27 +168,6 @@
 
 <div id="toast">Notification Message</div>
 
-<!-- LOGIN / AUTH MODAL (Can be bypassed with instant admin mode) -->
-<div id="loginModal" class="modal-overlay" style="display: none;">
-  <div class="card" style="width: 100%; max-width: 420px; margin: 0; background: var(--bg-surface); text-align: center;">
-    <div class="logo-badge" style="margin: 0 auto 16px auto;">💠</div>
-    <h3>Sign In to Trace-IQ</h3>
-    <p style="color: var(--text-muted); font-size: 13px; margin-bottom: 24px;">Enter your credentials to access your isolated requirements sandbox.</p>
-    
-    <form onsubmit="handlePasswordLogin(event)">
-      <div class="form-group" style="text-align: left;">
-        <label>Email Address</label>
-        <input type="email" id="loginEmail" placeholder="vaibz8385@gmail.com" required>
-      </div>
-      <div class="form-group" style="text-align: left;">
-        <label>Password</label>
-        <input type="password" id="loginPassword" placeholder="••••••••" required>
-      </div>
-      <button type="submit" style="width: 100%;">Sign In Instantly</button>
-    </form>
-  </div>
-</div>
-
 <div class="app-container">
   
   <header>
@@ -467,7 +446,6 @@
   const SUPABASE_ANON_KEY = 'sb_publishable_eBdLaYoh4ngV5pkDvL3EMA_F069FJQB';
   const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-  // INSTANT ADMIN BYPASS SESSION
   let currentUser = { id: 'admin-master-bypass', email: 'vaibz8385@gmail.com' };
   let isAdmin = true;
   let tourVisible = true;
@@ -478,15 +456,6 @@
     toast.textContent = message;
     toast.style.display = 'block';
     setTimeout(() => { toast.style.display = 'none'; }, 3000);
-  }
-
-  // INSTANT SESSION INITIALIZER
-  function checkUserSession() {
-    document.getElementById('loginModal').style.display = 'none';
-    document.getElementById('authStatusText').textContent = 'vaibz8385@gmail.com (Master Admin)';
-    document.getElementById('userHeaderSub').textContent = 'Cloud DB Connected & Secured';
-    document.getElementById('btn-admin').style.display = 'flex';
-    fetchRequirements();
   }
 
   function handleLogout() {
@@ -539,6 +508,7 @@
   async function loadAdminReviewQueue() {
     const { data, error } = await supabase.from('requirements').select('*').eq('is_approved', false);
     const tbody = document.getElementById('adminApprovalTableBody');
+    if (!tbody) return;
     tbody.innerHTML = '';
     
     if (!data || data.length === 0) {
@@ -568,7 +538,7 @@
     }
   }
 
-  // NAVIGATION & UI
+  // NAVIGATION & UI SWITCHER
   function toggleHelpTab() {
     tourVisible = !tourVisible;
     const tourBtn = document.getElementById('btn-tour');
@@ -584,7 +554,8 @@
   }
 
   function switchTab(tabName) {
-    ['tour', 'ai', 'chat', 'matrix', 'impact', 'test', 'compliance', 'analytics', 'admin', 'audit'].forEach(t => {
+    const tabs = ['tour', 'ai', 'chat', 'matrix', 'impact', 'test', 'compliance', 'analytics', 'admin', 'audit'];
+    tabs.forEach(t => {
       const el = document.getElementById('view-' + t);
       const btn = document.getElementById('btn-' + t);
       if (el) el.style.display = (t === tabName) ? 'block' : 'none';
@@ -601,8 +572,10 @@
   }
 
   function renderRTMTable() {
-    const query = document.getElementById('reqSearchInput').value.toLowerCase();
+    const searchInput = document.getElementById('reqSearchInput');
+    const query = searchInput ? searchInput.value.toLowerCase() : '';
     const tbody = document.getElementById('rtmTableBody');
+    if (!tbody) return;
     tbody.innerHTML = '';
     cachedReqs.forEach(r => {
       if (query && !r.req_id.toLowerCase().includes(query) && !r.title.toLowerCase().includes(query)) return;
@@ -626,6 +599,7 @@
 
   function populateImpactDropdown() {
     const selectEl = document.getElementById('impactSelectReq');
+    if (!selectEl) return;
     selectEl.innerHTML = '';
     cachedReqs.forEach(r => {
       const opt = document.createElement('option');
@@ -638,8 +612,9 @@
 
   function runImpactSimulation() {
     const selectEl = document.getElementById('impactSelectReq');
-    const r = cachedReqs.find(item => item.id === selectEl.value) || cachedReqs[0];
     const container = document.getElementById('impactResultContainer');
+    if (!selectEl || !container) return;
+    const r = cachedReqs.find(item => item.id === selectEl.value) || cachedReqs[0];
     if (!r) { container.innerHTML = '<p style="color: var(--text-muted);">No requirements found.</p>'; return; }
 
     container.innerHTML = `
@@ -656,6 +631,7 @@
 
   function populateTestDropdown() {
     const selectEl = document.getElementById('testSelectReq');
+    if (!selectEl) return;
     selectEl.innerHTML = '';
     cachedReqs.forEach(r => {
       const opt = document.createElement('option');
@@ -668,8 +644,9 @@
 
   function generateBDDTests() {
     const selectEl = document.getElementById('testSelectReq');
-    const r = cachedReqs.find(item => item.id === selectEl.value) || cachedReqs[0];
     const container = document.getElementById('testResultContainer');
+    if (!selectEl || !container) return;
+    const r = cachedReqs.find(item => item.id === selectEl.value) || cachedReqs[0];
     if (!r) return;
 
     container.innerHTML = `
@@ -685,23 +662,30 @@ Scenario: Validating ${r.req_id}
   }
 
   function runComplianceAudit() {
-    const framework = document.getElementById('complianceFramework').value;
-    document.getElementById('complianceResultContainer').innerHTML = `
+    const framework = document.getElementById('complianceFramework');
+    const container = document.getElementById('complianceResultContainer');
+    if (!framework || !container) return;
+    container.innerHTML = `
       <div class="card" style="background: rgba(0,0,0,0.2); border-color: var(--success); margin: 0;">
-        <h3 style="color: var(--success); margin-bottom: 8px;">✓ ${framework} Compliance Verified</h3>
+        <h3 style="color: var(--success); margin-bottom: 8px;">✓ ${framework.value} Compliance Verified</h3>
         <p style="color: var(--text-muted); font-size: 13px;">All requirements cross-referenced against governance clauses with zero gaps.</p>
       </div>
     `;
   }
 
   function updateAnalytics() {
-    document.getElementById('statTotalReqs').textContent = cachedReqs.length;
-    document.getElementById('statCoverage').textContent = '100%';
-    document.getElementById('statHighRisk').textContent = cachedReqs.filter(r => r.risk === 'High').length;
+    const totalEl = document.getElementById('statTotalReqs');
+    const covEl = document.getElementById('statCoverage');
+    const riskEl = document.getElementById('statHighRisk');
+    if (totalEl) totalEl.textContent = cachedReqs.length;
+    if (covEl) covEl.textContent = '100%';
+    if (riskEl) riskEl.textContent = cachedReqs.filter(r => r.risk === 'High').length;
   }
 
   function renderAuditTable() {
-    document.getElementById('auditTableBody').innerHTML = `
+    const tbody = document.getElementById('auditTableBody');
+    if (!tbody) return;
+    tbody.innerHTML = `
       <tr>
         <td style="font-size: 12px; color: var(--text-muted);">${new Date().toLocaleString()}</td>
         <td><strong>vaibz8385@gmail.com</strong></td>
@@ -745,8 +729,8 @@ Scenario: Validating ${r.req_id}
     }, 500);
   }
 
-  // Initialize Session Immediately
-  checkUserSession();
+  // Initial Load
+  fetchRequirements();
   switchTab('tour');
 </script>
 
