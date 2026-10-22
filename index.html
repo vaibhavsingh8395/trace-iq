@@ -227,7 +227,6 @@
       </div>
     </div>
     <div style="display: flex; gap: 12px; align-items: center;">
-      <!-- LIGHT / DARK THEME TOGGLE BUTTON -->
       <button class="btn-small btn-secondary" id="themeToggleBtn" title="Toggle Light/Dark Theme">🌙 Theme</button>
       <button class="btn-small btn-secondary" id="logoutBtn">Sign Out</button>
     </div>
@@ -534,6 +533,7 @@
       const userProfile = rows[0];
       localStorage.setItem('trace_iq_user', userProfile.email);
       localStorage.setItem('trace_iq_admin', userProfile.is_admin ? 'true' : 'false');
+      logAuditAction('SIGN_IN', 'User signed into workspace session');
       showToast('Signed in successfully!');
       checkUserSession();
     } catch (err) {
@@ -590,6 +590,7 @@
         showToast('Account created successfully! Signing you in...');
         localStorage.setItem('trace_iq_user', email);
         localStorage.setItem('trace_iq_admin', 'false');
+        logAuditAction('SIGN_UP', 'New account registered');
         checkUserSession();
       } else {
         showToast('Error creating account or email already in use.');
@@ -600,9 +601,29 @@
   }
 
   function handleLogout() {
+    logAuditAction('SIGN_OUT', 'User signed out');
     localStorage.removeItem('trace_iq_user');
     localStorage.removeItem('trace_iq_admin');
     location.reload();
+  }
+
+  async function logAuditAction(action, summary) {
+    try {
+      await fetch(`${SUPABASE_URL}/rest/v1/audit_logs`, {
+        method: 'POST',
+        headers: {
+          'apikey': SUPABASE_ANON_KEY,
+          'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+          'Content-Type': 'application/json',
+          'Prefer': 'return=minimal'
+        },
+        body: JSON.stringify({
+          analyst: currentUser ? currentUser.email : 'System/Guest',
+          action: action,
+          summary: summary
+        })
+      });
+    } catch (e) {}
   }
 
   async function fetchRequirements() {
@@ -617,6 +638,25 @@
         updateAnalytics();
       }
     } catch (err) {}
+  }
+
+  async function fetchAuditLogs() {
+    try {
+      const res = await fetch(`${SUPABASE_URL}/rest/v1/audit_logs?select=*&order=timestamp.desc`, {
+        headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': `Bearer ${SUPABASE_ANON_KEY}` }
+      });
+      const logs = res.ok ? await res.json() : [];
+      const tbody = document.getElementById('auditTableBody');
+      tbody.innerHTML = '';
+      if (!logs || logs.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="4" style="text-align: center; color: var(--text-muted);">No audit events recorded yet.</td></tr>`;
+        return;
+      }
+      logs.forEach(log => {
+        const time = new Date(log.timestamp).toLocaleTimeString();
+        tbody.innerHTML += `<tr><td style="font-family:monospace; font-size:12px;">${time}</td><td>${log.analyst}</td><td><span class="badge badge-low">${log.action}</span></td><td>${log.summary}</td></tr>`;
+      });
+    } catch (e) {}
   }
 
   function setupRealtimeSync() {
@@ -649,10 +689,7 @@
       });
 
       const responseData = await edgeResponse.json();
-
-      if (!edgeResponse.ok) {
-        throw new Error(responseData.error || 'Edge function execution failed.');
-      }
+      if (!edgeResponse.ok) throw new Error(responseData.error || 'Edge function execution failed.');
 
       const newReqId = 'REQ-AI-' + Math.floor(Math.random() * 900 + 100);
 
@@ -677,6 +714,7 @@
       });
 
       if (dbResponse.ok) {
+        logAuditAction('AI_DECOMPOSE', `Decomposed requirement ${newReqId}: ${responseData.title}`);
         showToast('✨ Successfully decomposed & saved to Supabase!');
         transcriptInput.value = '';
         switchTab('matrix');
@@ -684,7 +722,6 @@
         showToast('Error saving requirement to Supabase table.');
       }
     } catch (err) {
-      console.error('AI Decomposition Error:', err);
       showToast('Error: ' + err.message);
     }
   }
@@ -692,12 +729,13 @@
   async function handleCreateReq(e) {
     e.preventDefault();
     const newReqId = 'REQ-00' + Math.floor(Math.random() * 900 + 100);
+    const title = document.getElementById('reqTitleInput').value.trim();
     await fetch(`${SUPABASE_URL}/rest/v1/requirements`, {
       method: 'POST',
       headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': `Bearer ${SUPABASE_ANON_KEY}`, 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
       body: JSON.stringify({
         req_id: newReqId,
-        title: document.getElementById('reqTitleInput').value.trim(),
+        title: title,
         user_story: document.getElementById('reqStoryInput').value.trim(),
         component: document.getElementById('reqComponentInput').value.trim(),
         risk: document.getElementById('reqRiskInput').value,
@@ -706,6 +744,7 @@
         user_email: currentUser.email
       })
     });
+    logAuditAction('CREATE_REQ', `Created requirement ${newReqId}: ${title}`);
     showToast('Requirement submitted successfully!');
     document.getElementById('reqModal').style.display = 'none';
     fetchRequirements();
@@ -716,6 +755,7 @@
       method: 'DELETE',
       headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': `Bearer ${SUPABASE_ANON_KEY}` }
     });
+    logAuditAction('DELETE_REQ', `Removed requirement ID ${uuid}`);
     showToast('Requirement removed');
     fetchRequirements();
   }
@@ -726,6 +766,7 @@
       headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': `Bearer ${SUPABASE_ANON_KEY}`, 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
       body: JSON.stringify({ status: newStatus })
     });
+    logAuditAction('UPDATE_STATUS', `Moved requirement ${uuid} to ${newStatus}`);
     showToast(`Moved to ${newStatus}`);
     fetchRequirements();
   }
@@ -741,6 +782,7 @@
       },
       body: JSON.stringify({ risk: newRisk })
     });
+    logAuditAction('UPDATE_RISK', `Updated risk level to ${newRisk} for requirement ${uuid}`);
     showToast(`Risk level updated to ${newRisk}!`);
     fetchRequirements();
   }
@@ -768,6 +810,7 @@
       headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': `Bearer ${SUPABASE_ANON_KEY}`, 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
       body: JSON.stringify({ is_approved: true, status: 'To Do' })
     });
+    logAuditAction('APPROVE_REQ', `Approved requirement ${uuid} into master RTM`);
     showToast('Approved into master RTM!');
     loadAdminData();
     fetchRequirements();
@@ -783,6 +826,7 @@
       headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': `Bearer ${SUPABASE_ANON_KEY}`, 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
       body: JSON.stringify({ company_name: company, enterprise_code: code })
     });
+    logAuditAction('GENERATE_CODE', `Generated enterprise code ${code} for ${company}`);
     showToast(`Generated code: ${code}`);
     document.getElementById('newCompanyName').value = '';
   }
@@ -805,6 +849,7 @@
     if (tabName === 'kanban') renderKanbanBoard();
     if (tabName === 'admin') loadAdminData();
     if (tabName === 'analytics') updateAnalytics();
+    if (tabName === 'audit') fetchAuditLogs();
   }
 
   function renderRTMTable() {
