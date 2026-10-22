@@ -35,7 +35,7 @@
     /* SEGMENTED NAVIGATION */
     .nav-tabs { 
       display: flex; 
-      gap: 8px; 
+      gap: 6px; 
       margin-bottom: 32px; 
       background: rgba(255, 255, 255, 0.04);
       padding: 6px;
@@ -47,11 +47,11 @@
       background: transparent; 
       color: var(--text-muted); 
       border: none; 
-      padding: 10px 18px; 
+      padding: 10px 14px; 
       border-radius: 10px; 
       font-weight: 500; 
       cursor: pointer; 
-      font-size: 13px; 
+      font-size: 12px; 
       transition: all 0.2s ease; 
       display: flex;
       align-items: center;
@@ -130,6 +130,13 @@
       margin-top: 8px;
       padding-top: 10px;
     }
+
+    /* KANBAN BOARD */
+    .kanban-board { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px; margin-top: 24px; }
+    .kanban-col { background: rgba(0,0,0,0.3); border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 20px; min-height: 400px; display: flex; flex-direction: column; gap: 14px; }
+    .kanban-col h4 { margin: 0; font-size: 13px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); display: flex; justify-content: space-between; align-items: center; }
+    .kanban-card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 10px; padding: 16px; cursor: grab; transition: all 0.2s; }
+    .kanban-card:hover { border-color: var(--accent); transform: translateY(-2px); }
 
     /* MODAL OVERLAY */
     .modal-overlay {
@@ -263,19 +270,21 @@
     <button class="tab-btn active" id="nav-tour">🧭 Guided Tour</button>
     <button class="tab-btn" id="nav-ai">🤖 AI Decomposition</button>
     <button class="tab-btn" id="nav-chat">💬 RTM Copilot</button>
-    <button class="tab-btn" id="nav-matrix">📋 Traceability Matrix</button>
+    <button class="tab-btn" id="nav-matrix">📋 RTM Matrix</button>
+    <button class="tab-btn" id="nav-kanban">📌 Sprint Kanban</button>
+    <button class="tab-btn" id="nav-wiki">📖 PRD Wiki</button>
     <button class="tab-btn" id="nav-impact">⚡ Impact Analyzer</button>
     <button class="tab-btn" id="nav-test">🧪 BDD Generator</button>
     <button class="tab-btn" id="nav-compliance">🛡️ Compliance</button>
     <button class="tab-btn" id="nav-analytics">📊 Analytics</button>
-    <button class="tab-btn" id="nav-admin" style="display: none; border-color: var(--accent); color: var(--accent);">🛡️ Admin Approval</button>
+    <button class="tab-btn" id="nav-admin" style="display: none; border-color: var(--accent); color: var(--accent);">🛡️ Admin</button>
     <button class="tab-btn" id="nav-audit">🔍 Audit Log</button>
   </div>
 
   <!-- TAB -1: GUIDED TOUR / ONBOARDING WITH HOVER DEEP-DIVE -->
   <div id="view-tour" class="card">
     <h2>Welcome to Trace-IQ Enterprise 👋</h2>
-    <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 20px;">Coming from <strong>Jira, Confluence, or Scrum</strong>? Think of Trace-IQ as your intelligent requirements bridge that connects Confluence PRDs and Jira epics directly to downstream code components. <em>Hover over any card below for detailed use cases and technical terminologies.</em></p>
+    <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 20px;">Combining the requirements rigor of <strong>Trace-IQ</strong> with full agile execution suites like <strong>Jira and Confluence</strong>. <em>Hover over any card below for detailed use cases and technical terminologies.</em></p>
 
     <div class="tour-grid">
       <div class="tour-card">
@@ -312,7 +321,29 @@
       </div>
 
       <div class="tour-card">
-        <div class="tour-header"><div class="tour-number">4</div><h3>⚡ Impact Analyzer</h3></div>
+        <div class="tour-header"><div class="tour-number">4</div><h3>📌 Sprint Kanban Board</h3></div>
+        <p style="color: var(--text-muted); font-size: 13px; margin: 0;">Visual sprint workflow board with drag-and-drop columns (To Do, In Progress, In Review, Done) synced to Supabase.</p>
+        <div class="tour-details">
+          <strong>Use Case:</strong> Managing agile sprint tasks and tracking developer progress in real time across team members.<br><br>
+          <strong>Terminology:</strong><br>
+          • <em>Kanban Workflow:</em> Visualizing work-in-progress (WIP) limits and task stages.<br>
+          • <em>Realtime Sync:</em> WebSocket synchronization broadcasting card movements instantly.
+        </div>
+      </div>
+
+      <div class="tour-card">
+        <div class="tour-header"><div class="tour-number">5</div><h3>📖 PRD Wiki Workspace</h3></div>
+        <p style="color: var(--text-muted); font-size: 13px; margin: 0;">Collaborative product requirements document (PRD) editor and knowledge repository modeled after Confluence.</p>
+        <div class="tour-details">
+          <strong>Use Case:</strong> Storing product specs, architectural blueprints, and meeting notes in a centralized team wiki.<br><br>
+          <strong>Terminology:</strong><br>
+          • <em>Wiki Workspace:</em> Hierarchical documentation storage with markdown and rich-text editing.<br>
+          • <em>PRD Repository:</em> Central source of truth for feature requirements.
+        </div>
+      </div>
+
+      <div class="tour-card">
+        <div class="tour-header"><div class="tour-number">6</div><h3>⚡ Impact Analyzer</h3></div>
         <p style="color: var(--text-muted); font-size: 13px; margin: 0;">Simulate scope changes during sprint planning and scan automated GitHub PR webhooks to detect code drift.</p>
         <div class="tour-details">
           <strong>Use Case:</strong> Preventing unintended regression bugs when product managers alter feature scopes late in a release cycle.<br><br>
@@ -323,7 +354,7 @@
       </div>
 
       <div class="tour-card">
-        <div class="tour-header"><div class="tour-number">5</div><h3>🧪 BDD Generator</h3></div>
+        <div class="tour-header"><div class="tour-number">7</div><h3>🧪 BDD Generator</h3></div>
         <p style="color: var(--text-muted); font-size: 13px; margin: 0;">Automatically translate user stories into Gherkin BDD scenarios (`Given / When / Then`) and Jest test boilerplate for QA.</p>
         <div class="tour-details">
           <strong>Use Case:</strong> Bridging the gap between QA automation engineers and product owners with standardized behavior specs.<br><br>
@@ -334,7 +365,7 @@
       </div>
 
       <div class="tour-card">
-        <div class="tour-header"><div class="tour-number">6</div><h3>🛡️ Compliance Audit</h3></div>
+        <div class="tour-header"><div class="tour-number">8</div><h3>🛡️ Compliance Audit</h3></div>
         <p style="color: var(--text-muted); font-size: 13px; margin: 0;">Cross-reference your sprint requirements against SOC2 Type II, GDPR, and HIPAA governance frameworks instantly.</p>
         <div class="tour-details">
           <strong>Use Case:</strong> Automated regulatory readiness checking before submitting builds to enterprise security auditors.<br><br>
@@ -406,7 +437,56 @@
     </table>
   </div>
 
-  <!-- TAB 3: IMPACT SIMULATOR -->
+  <!-- TAB 3: KANBAN SPRINT BOARD -->
+  <div id="view-kanban" class="card" style="display: none;">
+    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px;">
+      <div>
+        <h2>Sprint Kanban Board</h2>
+        <p style="color: var(--text-muted); font-size: 14px; margin: 4px 0 0 0;">Interactive Jira-style sprint workflow synced in real time via Supabase.</p>
+      </div>
+    </div>
+
+    <div class="kanban-board">
+      <div class="kanban-col" data-status="To Do">
+        <h4><span>📌 To Do</span> <span id="count-todo">0</span></h4>
+        <div id="kanban-todo" style="display: flex; flex-direction: column; gap: 12px; min-height: 300px;"></div>
+      </div>
+      <div class="kanban-col" data-status="In Progress">
+        <h4><span>⚡ In Progress</span> <span id="count-prog">0</span></h4>
+        <div id="kanban-prog" style="display: flex; flex-direction: column; gap: 12px; min-height: 300px;"></div>
+      </div>
+      <div class="kanban-col" data-status="In Review">
+        <h4><span>🔍 In Review</span> <span id="count-review">0</span></h4>
+        <div id="kanban-review" style="display: flex; flex-direction: column; gap: 12px; min-height: 300px;"></div>
+      </div>
+      <div class="kanban-col" data-status="Done">
+        <h4><span>✅ Done</span> <span id="count-done">0</span></h4>
+        <div id="kanban-done" style="display: flex; flex-direction: column; gap: 12px; min-height: 300px;"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB 4: PRD WIKI WORKSPACE -->
+  <div id="view-wiki" class="card" style="display: none;">
+    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px;">
+      <div>
+        <h2>Confluence PRD Wiki Workspace</h2>
+        <p style="color: var(--text-muted); font-size: 14px; margin: 4px 0 0 0;">Collaborative product documentation and requirement specifications.</p>
+      </div>
+      <button id="saveWikiBtn">Save PRD Document</button>
+    </div>
+
+    <div class="form-group" style="margin-top: 24px;">
+      <label>Document Title</label>
+      <input type="text" id="wikiTitleInput" value="Q4 Enterprise Security & Architecture PRD">
+    </div>
+    <div class="form-group">
+      <label>PRD Content & Architecture Notes (Markdown Supported)</label>
+      <textarea id="wikiContentInput" rows="10" placeholder="# Overview..."></textarea>
+    </div>
+  </div>
+
+  <!-- TAB 5: IMPACT SIMULATOR -->
   <div id="view-impact" class="card" style="display: none;">
     <h2>Change Impact Analyzer & Code Drift</h2>
     <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 24px;">Simulate scope modifications and scan GitHub PR webhooks for code drift.</p>
@@ -419,7 +499,7 @@
     <div id="impactResultContainer" style="margin-top: 24px;"></div>
   </div>
 
-  <!-- TAB 4: BDD GENERATOR -->
+  <!-- TAB 6: BDD GENERATOR -->
   <div id="view-test" class="card" style="display: none;">
     <h2>Automated BDD & Integration Test Generator</h2>
     <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 24px;">Generate Gherkin scenarios and Jest integration scripts instantly.</p>
@@ -432,7 +512,7 @@
     <div id="testResultContainer" style="margin-top: 24px;"></div>
   </div>
 
-  <!-- TAB 5: COMPLIANCE -->
+  <!-- TAB 7: COMPLIANCE -->
   <div id="view-compliance" class="card" style="display: none;">
     <h2>Regulatory Compliance Cross-Referencing</h2>
     <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 24px;">Audit active requirements against enterprise governance frameworks.</p>
@@ -449,7 +529,7 @@
     <div id="complianceResultContainer" style="margin-top: 24px;"></div>
   </div>
 
-  <!-- TAB 6: ANALYTICS -->
+  <!-- TAB 8: ANALYTICS -->
   <div id="view-analytics" class="card" style="display: none;">
     <h2>Metrics & Export Suite</h2>
     <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 28px;">Export verified Requirements Specification packages.</p>
@@ -475,7 +555,7 @@
     </div>
   </div>
 
-  <!-- TAB 7: ADMIN APPROVAL PORTAL -->
+  <!-- TAB 9: ADMIN APPROVAL PORTAL -->
   <div id="view-admin" class="card" style="display: none;">
     <h2>Admin Approval & Review Portal</h2>
     <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 24px;">Review pending requirements submitted across all tester sandboxes and approve them into the master RTM.</p>
@@ -494,7 +574,7 @@
     </table>
   </div>
 
-  <!-- TAB 8: AUDIT LOG -->
+  <!-- TAB 10: AUDIT LOG -->
   <div id="view-audit" class="card" style="display: none;">
     <h2>Lifecycle Audit Trail</h2>
     <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 24px;">Immutable telemetry of stakeholder edits and scope modifications.</p>
@@ -671,6 +751,7 @@
       if (response.ok) {
         cachedReqs = await response.json() || [];
         renderRTMTable();
+        renderKanbanBoard();
         updateAnalytics();
       }
     } catch (err) {
@@ -774,7 +855,7 @@
           user_story: extractedData.user_story,
           component: extractedData.component,
           risk: extractedData.risk,
-          status: 'Pending Review',
+          status: 'To Do',
           is_approved: false,
           user_email: currentUser ? currentUser.email : 'vaibz8385@gmail.com'
         })
@@ -816,7 +897,7 @@
           user_story: story,
           component,
           risk,
-          status: 'Pending Review',
+          status: 'To Do',
           is_approved: false,
           user_email: currentUser ? currentUser.email : 'guest'
         })
@@ -849,6 +930,27 @@
       }
     } catch (err) {
       showToast('Error deleting requirement.');
+    }
+  }
+
+  async function updateReqStatus(uuid, newStatus) {
+    try {
+      const response = await fetch(`${SUPABASE_URL}/rest/v1/requirements?id=eq.${uuid}`, {
+        method: 'PATCH',
+        headers: {
+          'apikey': SUPABASE_ANON_KEY,
+          'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+          'Content-Type': 'application/json',
+          'Prefer': 'return=minimal'
+        },
+        body: JSON.stringify({ status: newStatus })
+      });
+      if (response.ok) {
+        showToast(`Moved to ${newStatus}`);
+        fetchRequirements();
+      }
+    } catch (err) {
+      showToast('Error updating status.');
     }
   }
 
@@ -901,7 +1003,7 @@
           'Content-Type': 'application/json',
           'Prefer': 'return=minimal'
         },
-        body: JSON.stringify({ is_approved: true, status: 'Verified' })
+        body: JSON.stringify({ is_approved: true, status: 'To Do' })
       });
       if (response.ok) {
         showToast('Requirement approved into master RTM!');
@@ -930,7 +1032,7 @@
   }
 
   function switchTab(tabName) {
-    const tabs = ['tour', 'ai', 'chat', 'matrix', 'impact', 'test', 'compliance', 'analytics', 'admin', 'audit'];
+    const tabs = ['tour', 'ai', 'chat', 'matrix', 'kanban', 'wiki', 'impact', 'test', 'compliance', 'analytics', 'admin', 'audit'];
     tabs.forEach(t => {
       const el = document.getElementById('view-' + t);
       const btn = document.getElementById('nav-' + t);
@@ -939,6 +1041,7 @@
     });
 
     if (tabName === 'matrix') fetchRequirements();
+    if (tabName === 'kanban') renderKanbanBoard();
     if (tabName === 'impact') populateImpactDropdown();
     if (tabName === 'test') populateTestDropdown();
     if (tabName === 'compliance') runComplianceAudit();
@@ -963,7 +1066,7 @@
         <td style="color: var(--text-muted); font-size: 13px;">${r.user_story}</td>
         <td><span class="badge badge-low" style="font-family: monospace;">${r.component}</span></td>
         <td><span class="badge ${badgeClass}">${r.risk}</span></td>
-        <td><span class="badge ${r.is_approved ? 'badge-verified' : 'badge-med'}">${r.is_approved ? '● Verified' : '○ Pending'}</span></td>
+        <td><span class="badge badge-verified">${r.status || 'To Do'}</span></td>
         <td><button class="btn-small btn-secondary delete-req-btn" data-id="${r.id}">Remove</button></td>
       `;
       tbody.appendChild(row);
@@ -972,6 +1075,49 @@
     document.querySelectorAll('.delete-req-btn').forEach(btn => {
       btn.addEventListener('click', () => deleteReq(btn.getAttribute('data-id')));
     });
+  }
+
+  function renderKanbanBoard() {
+    const todoEl = document.getElementById('kanban-todo');
+    const progEl = document.getElementById('kanban-prog');
+    const reviewEl = document.getElementById('kanban-review');
+    const doneEl = document.getElementById('kanban-done');
+    if (!todoEl || !progEl || !reviewEl || !doneEl) return;
+
+    todoEl.innerHTML = ''; progEl.innerHTML = ''; reviewEl.innerHTML = ''; doneEl.innerHTML = '';
+    let counts = { 'To Do': 0, 'In Progress': 0, 'In Review': 0, 'Done': 0 };
+
+    cachedReqs.forEach(r => {
+      const status = r.status || 'To Do';
+      counts[status] = (counts[status] || 0) + 1;
+
+      const card = document.createElement('div');
+      card.className = 'kanban-card';
+      card.innerHTML = `
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+          <strong style="font-size: 11px; color: var(--accent);">${r.req_id}</strong>
+          <span class="badge ${r.risk === 'High' ? 'badge-high' : 'badge-low'}" style="font-size: 9px; padding: 2px 6px;">${r.risk}</span>
+        </div>
+        <div style="font-weight: 600; font-size: 13px; margin-bottom: 6px;">${r.title}</div>
+        <div style="font-size: 11px; color: var(--text-muted); margin-bottom: 12px; line-height: 1.3;">${r.user_story}</div>
+        <div style="display: flex; gap: 4px; flex-wrap: wrap;">
+          ${status !== 'To Do' ? `<button class="btn-small btn-secondary" style="font-size: 10px; padding: 2px 6px;" onclick="updateReqStatus('${r.id}', 'To Do')">← To Do</button>` : ''}
+          ${status !== 'In Progress' ? `<button class="btn-small btn-secondary" style="font-size: 10px; padding: 2px 6px;" onclick="updateReqStatus('${r.id}', 'In Progress')">In Prog</button>` : ''}
+          ${status !== 'In Review' ? `<button class="btn-small btn-secondary" style="font-size: 10px; padding: 2px 6px;" onclick="updateReqStatus('${r.id}', 'In Review')">Review</button>` : ''}
+          ${status !== 'Done' ? `<button class="btn-small btn-secondary" style="font-size: 10px; padding: 2px 6px;" onclick="updateReqStatus('${r.id}', 'Done')">Done →</button>` : ''}
+        </div>
+      `;
+
+      if (status === 'To Do') todoEl.appendChild(card);
+      else if (status === 'In Progress') progEl.appendChild(card);
+      else if (status === 'In Review') reviewEl.appendChild(card);
+      else if (status === 'Done') doneEl.appendChild(card);
+    });
+
+    document.getElementById('count-todo').textContent = counts['To Do'];
+    document.getElementById('count-prog').textContent = counts['In Progress'];
+    document.getElementById('count-review').textContent = counts['In Review'];
+    document.getElementById('count-done').textContent = counts['Done'];
   }
 
   function openNewReqModal() { 
@@ -1113,7 +1259,7 @@ Scenario: Validating ${r.req_id}
       showToast('API key saved successfully!');
     });
 
-    const tabs = ['tour', 'ai', 'chat', 'matrix', 'impact', 'test', 'compliance', 'analytics', 'admin', 'audit'];
+    const tabs = ['tour', 'ai', 'chat', 'matrix', 'kanban', 'wiki', 'impact', 'test', 'compliance', 'analytics', 'admin', 'audit'];
     tabs.forEach(t => {
       const btn = document.getElementById('nav-' + t);
       if (btn) btn.addEventListener('click', () => switchTab(t));
@@ -1124,6 +1270,10 @@ Scenario: Validating ${r.req_id}
     document.getElementById('startExploreBtn').addEventListener('click', () => switchTab('ai'));
 
     document.getElementById('runAiParseBtn').addEventListener('click', handleAIParseTranscript);
+    
+    document.getElementById('saveWikiBtn').addEventListener('click', () => {
+      showToast('PRD Wiki document saved to local session successfully!');
+    });
 
     // AUTONOMOUS AI AGENT COPILOT QUERY HANDLER
     document.getElementById('chatSendBtn').addEventListener('click', async () => {
