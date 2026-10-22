@@ -212,54 +212,80 @@
     <button class="btn-small btn-secondary" id="logoutBtn">Sign Out</button>
   </header>
 
-  <!-- GUIDED TOUR VIEW -->
+  <!-- GUIDED TOUR VIEW (UPDATED & INFORMATIVE) -->
   <div id="view-tour" class="card app-view" style="display: block;">
-    <h2>Welcome to Trace-IQ Enterprise 👋</h2>
-    <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 20px;">Combining requirements rigor with full agile execution suites. <em>Hover over cards below for technical details.</em></p>
+    <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 24px;">
+      <div>
+        <h2 style="font-size: 1.5rem; margin-bottom: 8px;">Welcome to Trace-IQ Enterprise 🚀</h2>
+        <p style="color: var(--text-muted); font-size: 14px; max-width: 800px; line-height: 1.5;">
+          Trace-IQ is your autonomous requirements intelligence platform. We bridge the gap between high-level stakeholder briefs and agile engineering execution. Follow this quick workflow guide to master your workspace.
+        </p>
+      </div>
+      <button id="startExploreBtn" style="white-space: nowrap;">Get Started →</button>
+    </div>
+
+    <!-- GLOSSARY BAR FOR FIRST-TIME USERS -->
+    <div style="background: rgba(10, 132, 255, 0.05); border: 1px solid rgba(10, 132, 255, 0.2); padding: 20px; border-radius: 12px; margin-bottom: 28px;">
+      <h3 style="font-size: 13px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--accent); margin-bottom: 12px;">📖 First-Time User Glossary</h3>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; font-size: 13px;">
+        <div><strong>RTM (Requirements Traceability Matrix):</strong> A master document linking business goals directly to technical code components.</div>
+        <div><strong>Atomic User Story:</strong> A standalone feature requirement written from the end-user's perspective.</div>
+        <div><strong>BDD (Behavior-Driven Development):</strong> Translating requirements into clear, testable Gherkin scenarios.</div>
+        <div><strong>Code Drift:</strong> Unintended discrepancies between what was planned in the PRD and what was actually pushed to GitHub.</div>
+      </div>
+    </div>
+
+    <h3 style="font-size: 1rem; margin-bottom: 16px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted);">Step-by-Step Workspace Workflow</h3>
 
     <div class="tour-grid">
       <div class="tour-card">
         <div class="tour-header"><div class="tour-number">1</div><h3>🤖 AI Decomposition</h3></div>
-        <p style="color: var(--text-muted); font-size: 13px; margin: 0;">Extract atomic User Stories from raw meeting notes instantly via secure edge functions.</p>
-        <div class="tour-details"><strong>Use Case:</strong> Eliminates manual backlog grooming.</div>
+        <p style="color: var(--text-muted); font-size: 13px; margin: 0;">Paste raw meeting transcripts or product notes here. Our AI engine extracts atomic user stories, estimates risk, and drafts component routes automatically.</p>
+        <div class="tour-details"><strong>Action:</strong> Go to AI Decomposition, paste notes, and click run.</div>
       </div>
+
       <div class="tour-card">
-        <div class="tour-header"><div class="tour-number">2</div><h3>💬 RTM Copilot</h3></div>
-        <p style="color: var(--text-muted); font-size: 13px; margin: 0;">Chat with your sprint backlog in plain English to query dependencies.</p>
-        <div class="tour-details"><strong>Use Case:</strong> Instant risk querying during sprint planning.</div>
+        <div class="tour-header"><div class="tour-number">2</div><h3>📋 RTM Traceability Matrix</h3></div>
+        <p style="color: var(--text-muted); font-size: 13px; margin: 0;">Your centralized command center. View all approved business requirements, track their risk tiers (High/Med/Low), and manage components.</p>
+        <div class="tour-details"><strong>Action:</strong> Review synced requirements or click "+ New Requirement".</div>
       </div>
+
       <div class="tour-card">
-        <div class="tour-header"><div class="tour-number">3</div><h3>📋 Traceability Matrix</h3></div>
-        <p style="color: var(--text-muted); font-size: 13px; margin: 0;">Centralized RTM linking business goals to API endpoints and schemas.</p>
-        <div class="tour-details"><strong>Use Case:</strong> End-to-end audit compliance tracking.</div>
+        <div class="tour-header"><div class="tour-number">3</div><h3>📌 Sprint Kanban Board</h3></div>
+        <p style="color: var(--text-muted); font-size: 13px; margin: 0;">Manage your team's live agile sprint workflow. Drag and drop or click status buttons to move requirements across To Do, In Progress, Review, and Done.</p>
+        <div class="tour-details"><strong>Action:</strong> Syncs in real-time across your entire enterprise team via Supabase.</div>
       </div>
+
       <div class="tour-card">
-        <div class="tour-header"><div class="tour-number">4</div><h3>📌 Sprint Kanban Board</h3></div>
-        <p style="color: var(--text-muted); font-size: 13px; margin: 0;">Visual sprint workflow synced in real time via Supabase.</p>
-        <div class="tour-details"><strong>Use Case:</strong> Real-time task progress across team members.</div>
+        <div class="tour-header"><div class="tour-number">4</div><h3>📖 PRD Wiki Workspace</h3></div>
+        <p style="color: var(--text-muted); font-size: 13px; margin: 0;">Collaborative product documentation modeled after Confluence. Keep your architecture notes, security guidelines, and specs centralized.</p>
+        <div class="tour-details"><strong>Action:</strong> Edit your living architecture documents and save instantly.</div>
       </div>
+
       <div class="tour-card">
-        <div class="tour-header"><div class="tour-number">5</div><h3>📖 PRD Wiki Workspace</h3></div>
-        <p style="color: var(--text-muted); font-size: 13px; margin: 0;">Collaborative product documentation modeled after Confluence.</p>
-        <div class="tour-details"><strong>Use Case:</strong> Centralized team wiki and feature specs.</div>
+        <div class="tour-header"><div class="tour-number">5</div><h3>💬 RTM AI Copilot</h3></div>
+        <p style="color: var(--text-muted); font-size: 13px; margin: 0;">Your intelligent assistant for sprint planning. Query your entire backlog in plain English to instantly surface high-risk dependencies.</p>
+        <div class="tour-details"><strong>Prompt Example:</strong> "Show me all high-risk security requirements."</div>
       </div>
+
       <div class="tour-card">
-        <div class="tour-header"><div class="tour-number">6</div><h3>⚡ Impact Analyzer</h3></div>
-        <p style="color: var(--text-muted); font-size: 13px; margin: 0;">Simulate scope changes and scan GitHub PR webhooks for code drift.</p>
-        <div class="tour-details"><strong>Use Case:</strong> Preventing unintended regression bugs.</div>
+        <div class="tour-header"><div class="tour-number">6</div><h3>🧪 BDD & Testing Suite</h3></div>
+        <p style="color: var(--text-muted); font-size: 13px; margin: 0;">Automatically turn abstract user stories into structured Gherkin test scenarios (Given/When/Then) and integration test suites for QA.</p>
+        <div class="tour-details"><strong>Action:</strong> Select a requirement to generate acceptance criteria.</div>
       </div>
+
       <div class="tour-card">
-        <div class="tour-header"><div class="tour-number">7</div><h3>🧪 BDD Generator</h3></div>
-        <p style="color: var(--text-muted); font-size: 13px; margin: 0;">Translate user stories into Gherkin BDD scenarios and Jest test suites.</p>
-        <div class="tour-details"><strong>Use Case:</strong> Standardized QA acceptance testing.</div>
+        <div class="tour-header"><div class="tour-number">7</div><h3>🛡️ Compliance Cross-Audit</h3></div>
+        <p style="color: var(--text-muted); font-size: 13px; margin: 0;">Cross-reference your active sprint requirements against rigorous frameworks like **SOC2 Type II**, **GDPR**, and **HIPAA**.</p>
+        <div class="tour-details"><strong>Action:</strong> Select your regulatory framework to audit coverage.</div>
       </div>
+
       <div class="tour-card">
-        <div class="tour-header"><div class="tour-number">8</div><h3>🛡️ Compliance Audit</h3></div>
-        <p style="color: var(--text-muted); font-size: 13px; margin: 0;">Audit requirements against SOC2 Type II, GDPR, and HIPAA frameworks.</p>
-        <div class="tour-details"><strong>Use Case:</strong> Automated regulatory readiness checking.</div>
+        <div class="tour-header"><div class="tour-number">8</div><h3>📊 Analytics & Admin</h3></div>
+        <p style="color: var(--text-muted); font-size: 13px; margin: 0;">Export your full RTM package as CSV or JSON, review audit trails, and manage company codes if you are an enterprise administrator.</p>
+        <div class="tour-details"><strong>Action:</strong> Monitor coverage metrics and export reports.</div>
       </div>
     </div>
-    <button style="margin-top: 20px;" id="startExploreBtn">Start Exploring Trace-IQ →</button>
   </div>
 
   <!-- AI DECOMPOSITION VIEW -->
