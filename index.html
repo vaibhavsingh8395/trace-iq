@@ -228,23 +228,6 @@
   </div>
 </div>
 
-<!-- GEMINI API KEY MODAL -->
-<div id="apiKeyModal" class="modal-overlay">
-  <div class="card" style="width: 100%; max-width: 440px; margin: 0; background: var(--bg-surface); text-align: center;">
-    <div class="logo-badge" style="margin: 0 auto 16px auto;">🤖</div>
-    <h3>Configure Gemini AI</h3>
-    <p style="color: var(--text-muted); font-size: 13px; margin-bottom: 24px;">Enter your Gemini key or auth token to enable intelligent RTM parsing. Stored securely in browser session.</p>
-    
-    <div style="text-align: left;">
-      <div class="form-group">
-        <label>API Key / Auth Token</label>
-        <input type="password" id="apiKeyInput" placeholder="Paste your key here..." required>
-      </div>
-      <button id="saveApiKeyBtn" style="width: 100%; margin-top: 10px;">Save & Enable AI</button>
-    </div>
-  </div>
-</div>
-
 <div class="app-container">
   
   <header>
@@ -259,7 +242,6 @@
       <div style="background: var(--bg-card); padding: 8px 16px; border-radius: 20px; border: 1px solid var(--border-color);">
         <span style="font-size: 12px; color: var(--success); font-weight: 500; display: flex; align-items: center; gap: 6px;"><span style="width: 7px; height: 7px; background: var(--success); border-radius: 50%; display: inline-block;"></span> <span id="authStatusText">Checking Session...</span></span>
       </div>
-      <button class="btn-small btn-secondary" id="configApiKeyBtn">⚙️ AI Key</button>
       <button class="btn-small btn-secondary" id="helpToggleBtn">Hide Onboarding Tour</button>
       <button class="btn-small btn-secondary" id="logoutBtn">Sign Out</button>
     </div>
@@ -382,7 +364,7 @@
   <!-- TAB 0: AI DECOMPOSITION -->
   <div id="view-ai" class="card" style="display: none;">
     <h2>Autonomous AI Requirements Decomposition</h2>
-    <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 24px;">Paste raw stakeholder interview transcripts or Confluence PRD briefs. Our semantic parser extracts atomic Functional Requirements instantly.</p>
+    <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 24px;">Paste raw stakeholder interview transcripts or Confluence PRD briefs. Our semantic parser extracts atomic Functional Requirements instantly via secure Supabase Edge Functions.</p>
     
     <div class="form-group">
       <label>Confluence / Scrum Refinement Transcript</label>
@@ -688,12 +670,6 @@
       const authStatusText = document.getElementById('authStatusText');
       if (authStatusText) authStatusText.textContent = 'Signed Out';
     }
-
-    const savedApiKey = localStorage.getItem('trace_iq_gemini_key');
-    if (!savedApiKey) {
-      const apiKeyModal = document.getElementById('apiKeyModal');
-      if (apiKeyModal) apiKeyModal.style.display = 'flex';
-    }
   }
 
   async function handleDirectLogin(e) {
@@ -782,7 +758,7 @@
     };
   }
 
-  // ROBUST AI DECOMPOSITION (With AQ Token Fallback Support)
+  // SECURE SERVER-SIDE AI DECOMPOSITION VIA SUPABASE EDGE FUNCTION
   async function handleAIParseTranscript() {
     const transcriptInput = document.getElementById('aiTranscriptInput');
     const text = transcriptInput ? transcriptInput.value.trim() : '';
@@ -792,55 +768,26 @@
       return;
     }
 
-    const apiKey = localStorage.getItem('trace_iq_gemini_key');
-    if (!apiKey) {
-      document.getElementById('apiKeyModal').style.display = 'flex';
-      return;
-    }
-
-    showToast('🤖 AI Semantic Parser analyzing transcript...');
-
-    let extractedData = null;
-
-    if (apiKey.startsWith('AQ.')) {
-      await new Promise(r => setTimeout(r, 600));
-      extractedData = {
-        title: text.length > 35 ? text.substring(0, 35) + '...' : text,
-        user_story: `As a stakeholder, I want to ensure that ${text.toLowerCase()}, so that business goals are met.`,
-        component: '/api/v1/feature-service',
-        risk: text.toLowerCase().includes('secure') || text.toLowerCase().includes('payment') ? 'High' : 'Medium'
-      };
-    } else {
-      try {
-        const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
-        const prompt = `Analyze this Scrum/Confluence requirement transcript and extract 1 atomic user story, a clean technical component route, and a risk level (High, Medium, or Low). 
-        Return ONLY a strict JSON object with these exact keys: "title", "user_story", "component", "risk". No markdown ticks, just raw JSON.
-        Transcript: "${text}"`;
-
-        const response = await fetch(GEMINI_URL, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
-        });
-
-        if (!response.ok) throw new Error('API fetch failed');
-        const result = await response.json();
-        let rawText = result.candidates[0].content.parts[0].text.trim();
-        rawText = rawText.replace(/```json/g, '').replace(/```/g, '').trim();
-        extractedData = JSON.parse(rawText);
-      } catch (err) {
-        extractedData = {
-          title: 'Requirement from Transcript',
-          user_story: text,
-          component: '/api/v1/service',
-          risk: 'Medium'
-        };
-      }
-    }
-
-    const newReqId = 'REQ-AI-' + Math.floor(Math.random() * 900 + 100);
+    showToast('🤖 AI Semantic Parser analyzing via Supabase Edge Function...');
 
     try {
+      const edgeResponse = await fetch(`${SUPABASE_URL}/functions/v1/ai-decompose`, {
+        method: 'POST',
+        headers: {
+          'apikey': SUPABASE_ANON_KEY,
+          'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ transcript: text })
+      });
+
+      if (!edgeResponse.ok) {
+        throw new Error('Edge function execution failed.');
+      }
+
+      const extractedData = await edgeResponse.json();
+      const newReqId = 'REQ-AI-' + Math.floor(Math.random() * 900 + 100);
+
       const dbResponse = await fetch(`${SUPABASE_URL}/rest/v1/requirements`, {
         method: 'POST',
         headers: {
@@ -857,7 +804,7 @@
           risk: extractedData.risk,
           status: 'To Do',
           is_approved: false,
-          user_email: currentUser ? currentUser.email : 'vaibz8385@gmail.com'
+          user_email: currentUser ? currentUser.email : 'tester@traceiq.com'
         })
       });
 
@@ -866,10 +813,11 @@
         transcriptInput.value = '';
         switchTab('matrix');
       } else {
-        showToast('Error saving requirement to Supabase.');
+        showToast('Error saving requirement to Supabase table.');
       }
-    } catch (e) {
-      showToast('Database connection error.');
+    } catch (err) {
+      console.error('AI Decomposition Error:', err);
+      showToast('Error processing AI decomposition.');
     }
   }
 
@@ -1243,21 +1191,6 @@ Scenario: Validating ${r.req_id}
   // EVENT BINDINGS ON LOAD
   document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('loginForm').addEventListener('submit', handleDirectLogin);
-
-    document.getElementById('configApiKeyBtn').addEventListener('click', () => {
-      document.getElementById('apiKeyModal').style.display = 'flex';
-    });
-
-    document.getElementById('saveApiKeyBtn').addEventListener('click', () => {
-      const keyInput = document.getElementById('apiKeyInput').value.trim();
-      if (!keyInput) {
-        alert('Please enter a valid key.');
-        return;
-      }
-      localStorage.setItem('trace_iq_gemini_key', keyInput);
-      document.getElementById('apiKeyModal').style.display = 'none';
-      showToast('API key saved successfully!');
-    });
 
     const tabs = ['tour', 'ai', 'chat', 'matrix', 'kanban', 'wiki', 'impact', 'test', 'compliance', 'analytics', 'admin', 'audit'];
     tabs.forEach(t => {
