@@ -517,7 +517,6 @@
         showToast('Please enter a valid Enterprise Code.');
         return;
       }
-      // Verify enterprise code exists
       try {
         const checkRes = await fetch(`${SUPABASE_URL}/rest/v1/enterprises?enterprise_code=eq.${encodeURIComponent(enterpriseCode)}&select=*`, {
           headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': `Bearer ${SUPABASE_ANON_KEY}` }
@@ -596,6 +595,7 @@
     };
   }
 
+  // REFINED EDGE FUNCTION AI DECOMPOSITION WITH ROBUST ERROR PROPAGATION
   async function handleAIParseTranscript() {
     const transcriptInput = document.getElementById('aiTranscriptInput');
     const text = transcriptInput ? transcriptInput.value.trim() : '';
@@ -605,25 +605,52 @@
     try {
       const edgeResponse = await fetch(`${SUPABASE_URL}/functions/v1/ai-decompose`, {
         method: 'POST',
-        headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': `Bearer ${SUPABASE_ANON_KEY}`, 'Content-Type': 'application/json' },
+        headers: {
+          'apikey': SUPABASE_ANON_KEY,
+          'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+          'Content-Type': 'application/json'
+        },
         body: JSON.stringify({ transcript: text })
       });
-      if (!edgeResponse.ok) throw new Error('Edge function failed.');
 
-      const extractedData = await edgeResponse.json();
+      const responseData = await edgeResponse.json();
+
+      if (!edgeResponse.ok) {
+        throw new Error(responseData.error || 'Edge function execution failed.');
+      }
+
       const newReqId = 'REQ-AI-' + Math.floor(Math.random() * 900 + 100);
 
-      await fetch(`${SUPABASE_URL}/rest/v1/requirements`, {
+      const dbResponse = await fetch(`${SUPABASE_URL}/rest/v1/requirements`, {
         method: 'POST',
-        headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': `Bearer ${SUPABASE_ANON_KEY}`, 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
-        body: JSON.stringify({ req_id: newReqId, title: extractedData.title, user_story: extractedData.user_story, component: extractedData.component, risk: extractedData.risk, status: 'To Do', is_approved: false, user_email: currentUser.email })
+        headers: {
+          'apikey': SUPABASE_ANON_KEY,
+          'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+          'Content-Type': 'application/json',
+          'Prefer': 'return=minimal'
+        },
+        body: JSON.stringify({
+          req_id: newReqId,
+          title: responseData.title,
+          user_story: responseData.user_story,
+          component: responseData.component,
+          risk: responseData.risk,
+          status: 'To Do',
+          is_approved: false,
+          user_email: currentUser ? currentUser.email : 'tester@traceiq.com'
+        })
       });
 
-      showToast('✨ Successfully decomposed & saved!');
-      transcriptInput.value = '';
-      switchTab('matrix');
+      if (dbResponse.ok) {
+        showToast('✨ Successfully decomposed & saved to Supabase!');
+        transcriptInput.value = '';
+        switchTab('matrix');
+      } else {
+        showToast('Error saving requirement to Supabase table.');
+      }
     } catch (err) {
-      showToast('Error processing AI decomposition.');
+      console.error('AI Decomposition Error:', err);
+      showToast('Error: ' + err.message);
     }
   }
 
