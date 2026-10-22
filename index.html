@@ -212,7 +212,7 @@
     <button class="btn-small btn-secondary" id="logoutBtn">Sign Out</button>
   </header>
 
-  <!-- GUIDED TOUR VIEW (UPDATED & INFORMATIVE) -->
+  <!-- GUIDED TOUR VIEW -->
   <div id="view-tour" class="card app-view" style="display: block;">
     <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 24px;">
       <div>
@@ -246,13 +246,13 @@
 
       <div class="tour-card">
         <div class="tour-header"><div class="tour-number">2</div><h3>📋 RTM Traceability Matrix</h3></div>
-        <p style="color: var(--text-muted); font-size: 13px; margin: 0;">Your centralized command center. View all approved business requirements, track their risk tiers (High/Med/Low), and manage components.</p>
-        <div class="tour-details"><strong>Action:</strong> Review synced requirements or click "+ New Requirement".</div>
+        <p style="color: var(--text-muted); font-size: 13px; margin: 0;">Your centralized command center. View all approved business requirements, track and edit their risk tiers (High/Med/Low), and manage components.</p>
+        <div class="tour-details"><strong>Action:</strong> Review synced requirements, change risks inline, or add new items.</div>
       </div>
 
       <div class="tour-card">
         <div class="tour-header"><div class="tour-number">3</div><h3>📌 Sprint Kanban Board</h3></div>
-        <p style="color: var(--text-muted); font-size: 13px; margin: 0;">Manage your team's live agile sprint workflow. Drag and drop or click status buttons to move requirements across To Do, In Progress, Review, and Done.</p>
+        <p style="color: var(--text-muted); font-size: 13px; margin: 0;">Manage your team's live agile sprint workflow. Move requirements across To Do, In Progress, Review, and Done with real-time updates.</p>
         <div class="tour-details"><strong>Action:</strong> Syncs in real-time across your entire enterprise team via Supabase.</div>
       </div>
 
@@ -322,7 +322,7 @@
     </div>
     <table>
       <thead>
-        <tr><th>Req ID</th><th>Feature / Epic</th><th>User Story</th><th>Technical Component</th><th>Risk</th><th>Status</th><th>Action</th></tr>
+        <tr><th>Req ID</th><th>Feature / Epic</th><th>User Story</th><th>Technical Component</th><th>Risk (Editable)</th><th>Status</th><th>Action</th></tr>
       </thead>
       <tbody id="rtmTableBody"></tbody>
     </table>
@@ -717,6 +717,21 @@
     fetchRequirements();
   }
 
+  async function updateReqRisk(uuid, newRisk) {
+    await fetch(`${SUPABASE_URL}/rest/v1/requirements?id=eq.${uuid}`, {
+      method: 'PATCH',
+      headers: { 
+        'apikey': SUPABASE_ANON_KEY, 
+        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`, 
+        'Content-Type': 'application/json', 
+        'Prefer': 'return=minimal' 
+      },
+      body: JSON.stringify({ risk: newRisk })
+    });
+    showToast(`Risk level updated to ${newRisk}!`);
+    fetchRequirements();
+  }
+
   async function loadAdminData() {
     if (!isAdmin) return;
     const res = await fetch(`${SUPABASE_URL}/rest/v1/requirements?is_approved=eq.false&select=*`, {
@@ -785,8 +800,25 @@
     tbody.innerHTML = '';
     cachedReqs.forEach(r => {
       if (q && !r.req_id.toLowerCase().includes(q) && !r.title.toLowerCase().includes(q)) return;
-      const bClass = r.risk === 'High' ? 'badge-high' : (r.risk === 'Medium' ? 'badge-med' : 'badge-low');
-      tbody.innerHTML += `<tr><td><strong>${r.req_id}</strong></td><td>${r.title}</td><td style="color:var(--text-muted);">${r.user_story}</td><td><span class="badge badge-low" style="font-family:monospace;">${r.component}</span></td><td><span class="badge ${bClass}">${r.risk}</span></td><td><span class="badge badge-verified">${r.status || 'To Do'}</span></td><td><button class="btn-small btn-secondary" onclick="deleteReq('${r.id}')">Remove</button></td></tr>`;
+      
+      const riskDropdown = `
+        <select class="btn-small btn-secondary" style="padding: 4px 8px; font-size: 11px;" onchange="updateReqRisk('${r.id}', this.value)">
+          <option value="High" ${r.risk === 'High' ? 'selected' : ''}>High</option>
+          <option value="Medium" ${r.risk === 'Medium' ? 'selected' : ''}>Medium</option>
+          <option value="Low" ${r.risk === 'Low' ? 'selected' : ''}>Low</option>
+        </select>
+      `;
+
+      tbody.innerHTML += `
+        <tr>
+          <td><strong>${r.req_id}</strong></td>
+          <td>${r.title}</td>
+          <td style="color:var(--text-muted);">${r.user_story}</td>
+          <td><span class="badge badge-low" style="font-family:monospace;">${r.component}</span></td>
+          <td>${riskDropdown}</td>
+          <td><span class="badge badge-verified">${r.status || 'To Do'}</span></td>
+          <td><button class="btn-small btn-secondary" onclick="deleteReq('${r.id}')">Remove</button></td>
+        </tr>`;
     });
   }
 
